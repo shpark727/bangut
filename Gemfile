@@ -1,12 +1,18 @@
 source 'https://rubygems.org'
 
-
+gem 'figaro' #secret.yml 위해 
+gem 'activesupport', '~> 4.2', '>= 4.2.4'
 gem 'carrierwave'
-gem 'fog'
+gem "fog"
 
+gem 'will_paginate', '~> 3.0.6'
+gem 'omniauth-facebook' 
 gem 'mailgun_rails'
 gem 'rmre', '~> 0.0.9'
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2', '~> 0.3.20'
+
+
+gem 'nokogiri'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.4'
 # Use sqlite3 as the database for Active Record

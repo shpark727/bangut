@@ -1,9 +1,12 @@
 class User < ActiveRecord::Base
     self.table_name = 'user'
+	#	mount_uploader :profile_img, S3uploaderUploader
 
-
-    belongs_to :image_pool, :class_name => 'ImagePool', :foreign_key => :profile_img
+		has_many :image_pools, :class_name => 'ImagePool'
     has_many :wanted_boards, :class_name => 'WantedBoard'
     has_many :wanted_comments, :class_name => 'WantedComment'
     has_many :withdraws, :class_name => 'Withdraw'
+ 
+		has_one :token, :class_name => 'Token'
+		
 end

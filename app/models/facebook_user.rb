@@ -1,5 +1,17 @@
 class FacebookUser < ActiveRecord::Base
     self.table_name = 'facebook_user'
+	
+	def self.omniauth(auth)
+		where(provider: auth.provider, uid: auth.uid).first_or_initialize.tap do |user|
+			user.provider = auth.provider
+			user.uid = auth.uid
+			user.name = auth.info.name
+			user.oauth_token = auth.credentials.token
+			user.oauth_expires_at = Time.at(auth.credentials.expires_at)
+			user.email = auth.info.email
+			user.save!
+		end
+	end
 
 
 end

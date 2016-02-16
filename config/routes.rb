@@ -1,18 +1,48 @@
 Rails.application.routes.draw do
   root 'home#index'
 
-  get 'home/index'
   
   get 'abcd' => 'home#abcd'
-  get 'home/abcd'
-  post 'home/abcd'
+	post 'abcd' => 'home#abcd'
 
-  get 'home/signup'
+	post 'signup' => 'home#signup'
+	post 'signin' => 'home#signin'
+  get 'signout' => 'home#signout'
+  
 
-  get 'home/signin'
+	post 'user' => 'home#user'
+	post 'edit_user' =>'home#edit_user'
+	post 'edit_pw' => 'home#edit_pw_user'
+	post 'find_pw' => 'home#find_pw_user'
+	get 'terms' => 'home#terms'
+	get 'post_list' => 'home#post_list'
+	get 'post_detail/:wanted_board_id' => 'home#post_detail'
+	get 'post_sort' => 'home#post_sort'
+	post 'create_post' => 'home#create_post'
+	post 'edit_post/:wanted_board_id' => 'home#edit_post'
+	post 'delete_post/:wanted_board_id' => 'home#delete_post'
+	get 'answer_post/:wanted_board_id/:wanted_reply' => 'home#answer_post'
+	post 'create_reply/:wanted_board_id' => 'home#create_reply'
+	post 'edit_reply/:reply_id' => 'home#edit_reply'
+	post 'delete_reply/:reply_id' => 'home#delete_reply'
+	post 'mypage_post' => 'home#mypage_post'
+	post 'mypage_reply' => 'home#mypage_reply'
+	get 'notice' => 'home#notice'
+	get 'version' => 'home#versions'
+	post 'image_upload' => 'home#image_upload'
+	get 'fb_share/' => 'home#fb_share'
 
-  get 'home/signout'
 
+
+
+
+  get 'auth/:provider/callback', to: 'home#fb_create' #facebook login routing the omniauth callback
+  get 'auth/failure', to: 'home#index'
+  get 'logout', to: 'home#fb_destroy'           # facebook logout routing the omniauth callback
+
+	get 'box/input'
+	get 'box/output'
+	get 'box/naverparse'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

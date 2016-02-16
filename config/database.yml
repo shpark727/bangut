@@ -5,7 +5,7 @@ development:
   reconnect: false
   database: campuswanted
   pool: 5
-  username: <%=ENV['C9_USER']%>
+  username: root
   password: 
   host: localhost
 # Warning: The database defined as "test" will be erased and
@@ -17,7 +17,7 @@ test:
   reconnect: false
   database: campuswanted
   pool: 5
-  username: <%=ENV['C9_USER']%>
+  username: root
   password: 
   host: localhost
   
@@ -27,6 +27,6 @@ production:
   reconnect: false
   database: campuswanted
   pool: 5
-  username: <%=ENV['C9_USER']%>
+  username: root
   password: 
   host: localhost

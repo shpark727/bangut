@@ -1,13 +1,178 @@
 <h1>Home#index</h1>
 <p>Find me in app/views/home/index.html.erb</p>
 
-hello ~! 
-
-
-<form action="abcd" method="get">
+hello ~! <br>
+<hr>
+서버내 토큰 <br>
+<% @c.each do |token| %>
+토큰아이디:<%= token.id %>
+토큰값:<%= token.utoken %>
+User아이디:<%= token.user_id %><br>
+<% end %>
+<hr>
+현재 회원가입 유저:<br>
+<% @d.each do |user| %>
+ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.user_token %><br>
+<% end %>
+<hr>
+이용약관 : <% @term.each do |term| %>
+<%= term.term_content %>
+<% end %><br>
+<hr>
+게시된 글 목록<br>
+<% unless @list.nil? %>
+<% @list.each do |list| %>
+<%= list.id%> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%><br>
+	<% list.wanted_comments.each do |comment| %>
+	댓글=>	<%= comment.id %> 글쓴이 ID<%= comment.user_id %>내용:<%= comment.content%> <h5><%= comment.created_at%></h5><br>
+	<% end %>
+<% end%> <br>
+<% else %>
+<% end %>
+<hr>
+<% @univ.each do |univ| %>
+<%= univ.id %>: <%= univ.univ_name %><br>
+<% end %> <br>
+<hr>
+<form action="signup" method="post" >
   email: <input type="string" name="email"><br>
   password: <input type="password" name="password"></br>
+	passwordre: <input type="password" name="password_re"><br>
+	name: <input type="string" name="name"></br>
   datetime: <input type="datetime" name="datetime"></br>
   
   <input type="submit" value="Submit">
+	
 </form>
+
+<form action="image_upload" method="post" enctype="multipart/form-data">	
+	image: <input type="file" name="image_file"></br>
+	
+	<input type="submit" value="submit">
+</form>
+
+<script>
+  // This is called with the results from from FB.getLoginStatus().
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    // The response object is returned with a status field that lets the
+    // app know the current login status of the person.
+    // Full docs on the response object can be found in the documentation
+    // for FB.getLoginStatus().
+    if (response.status === 'connected') {
+      // Logged into your app and Facebook.
+      testAPI();
+    } else if (response.status === 'not_authorized') {
+      // The person is logged into Facebook, but not your app.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
+    } else {
+      // The person is not logged into Facebook, so we're not sure if
+      // they are logged into this app or not.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into Facebook.';
+    }
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '929164573846483',
+    cookie     : true,  // enable cookies to allow the server to access 
+                        // the session
+    xfbml      : true,  // parse social plugins on this page
+    version    : 'v2.2' // use version 2.2
+  });
+
+  // Now that we've initialized the JavaScript SDK, we call 
+  // FB.getLoginStatus().  This function gets the state of the
+  // person visiting this page and can return one of three states to
+  // the callback you provide.  They can be:
+  //
+  // 1. Logged into your app ('connected')
+  // 2. Logged into Facebook, but not your app ('not_authorized')
+  // 3. Not logged into Facebook and can't tell if they are logged into
+  //    your app or not.
+  //
+  // These three cases are handled in the callback function.
+
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  // Here we run a very simple test of the Graph API after login is
+  // successful.  See statusChangeCallback() for when this call is made.
+  function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name);
+      document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '!';
+    });
+  }
+</script>
+<div>
+hello <%= link_to "sign in with facebook!!!!!!!!!", "/auth/facebook", id: "sign_in" %>
+</div>
+<!--
+  Below we include the Login Button social plugin. This button uses
+  the JavaScript SDK to present a graphical Login button that triggers
+  the FB.login() function when clicked.
+-->
+
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+<a href="logout">로그아웃</a>
+
+<div id="status">
+</div>
+
+<div
+  class="fb-like"
+  data-share="true"
+  data-width="450"
+  data-show-faces="true">
+</div>
+<br>
+로그인된 정보</br>
+세션[:user_id] =  <%= session[:user_id] %><br>
+
+페북로그인 정보<br>
+<% @b.each do |user| %>
+	프로바이더:<%= user.provider %> <br>
+	uid :<%= user.uid %> <br>
+ name :<%= user.name %><br>
+ token :<%= user.oauth_token %><br>
+ expires :<%= user.oauth_expires_at %><br>
+ email : <%= user.email %><br>
+ <% end %>
+
+
+
+<hr>
+페북공유하기 
+<form action="fb_share" method="get">
+ <input type="text" name="post_id">
+<input type="submit" value="ah">
+</form>
+<a href="fb_share">페북공유하기</a>
