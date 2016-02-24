@@ -36,7 +36,7 @@ Rails.application.routes.draw do
 
 
 
-  get 'auth/:provider/callback', to: 'home#fb_create' #facebook login routing the omniauth callback
+  get 'auth/:provider/callback', to: 'home#fb_create'    #facebook login routing the omniauth callback
   get 'auth/failure', to: 'home#index'
   get 'logout', to: 'home#fb_destroy'           # facebook logout routing the omniauth callback
 

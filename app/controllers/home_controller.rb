@@ -10,7 +10,8 @@ require 'digest/md5'
 	@term = Term.all	
 	@list = WantedBoard.all	
 	@univ = UnivCategory.all
-	
+	@img = ImagePool.all	
+	@fb_user = FacebookUser.all
   end
   
   def abcd
@@ -36,8 +37,12 @@ require 'digest/md5'
     @user.name = params[:name]
     #@user.created_date = Time.now.in_time_zone('Seoul')
     #@u.profile_img = profile_pool의 id
-    if params[:name].blank? ||  User.where(name: params[:name] ).take.present? || User.where(email: params[:email]).take.present? 
-      @check = {"success":false, "comment":"이미 존재하는 아이디입니다. 다시 시도해주세요"}
+    if params[:name].blank? 
+      @check = {"success":false, "comment":"항목을 빠짐없이 입력해주세요"}
+		elsif User.where(name: params[:name]).take.present?
+			@check ={"success":false, "comment":"이미 존재하는 이름입니다. 다시 시도해주세요"} 
+		elsif User.where(email: params[:email]).take.present?
+			@check ={"success":false, "comment":"이미 존재하는 이메일입니다. 다시 시도해주세요"}
     else
       @user.save
       @check= {"success":true, "comment":"가입이 완료되었습니다" }
@@ -54,13 +59,17 @@ require 'digest/md5'
     
     unless @user.nil?
 			
-      @a = Token.new
-			@a.utoken = SecureRandom.hex(3)
-			@a.user_id = @user.id
-      @a.save
-			@user.user_token = @a.utoken
+      @mytoken = Token.new
+			@mytoken.utoken = loop do
+      random_token = SecureRandom.urlsafe_base64(nil, false)
+      break random_token unless Token.exists?(utoken: random_token)
+    	end	
+		#	@a.utoken = SecureRandom.hex(3)
+			@mytoken.user_id = @user.id
+      @mytoken.save
+			@user.user_token = @mytoken.utoken
 			@user.save
-      @check={"success":true,"comment":"로그인에 성공하였습니다","token":@a.utoken}
+      @check={"success":true,"comment":"로그인에 성공하였습니다","token":@mytoken.utoken}
     else
       @check = {"success":false,"comment":"로그인에 실패하였습니다. 다시 시도해주세요"}
     end
@@ -493,14 +502,29 @@ require 'digest/md5'
   end
   
   def image_upload #이미지 업로드
-		token = Token.where(utoken: u_token).take
-  	user = User.find(token.user_id) 
-    myimages = ImagePool.new
-    myimages.path = params[:image_file]  #이미지 업로드 ~! 
-    myimages.save
+		token = Token.where(utoken: params[:u_token]).take
+		check = Hash.new
+		check = {"success":false,"comment":"이미지 업로드에 실패하였습니다.다시 확인해주세요"}
+		
+		if token.nil?
+		else
+  		user = User.find(token.user_id) 
+			if user.nil?
+			else
+    		myimages = ImagePool.new
+    		myimages.path = params[:image_file]  #이미지 업로드 ~! 
+				myimages.user_id = user.id
+    		myimages.save
+				user.profile_img =myimages.id 
+				check = {"success":true,"comment":"이미지 업로드에 성공하였습니다."}
+				user.save
+			end
+		end
+			respond_to do |format|
+				format.json {render json: check}
+			end
 		
     #myimage.path.url => 이렇게하면 출력! 
-    @imagepool = ImagePool.all 
   end
   
   def alarm_list #알람리스트
