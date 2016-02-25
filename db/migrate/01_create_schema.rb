@@ -111,7 +111,7 @@ class CreateSchema < ActiveRecord::Migration
 
   create_table "user", force: :cascade do |t|
     t.string   "email",          limit: 255
-    t.string   "password",       limit: 255, null: false
+    t.string   "password",       limit: 255
     t.string   "name",           limit: 64,  null: false
     t.string   "facebook_token", limit: 255
     t.integer  "profile_img",    limit: 4

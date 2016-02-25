@@ -14,20 +14,6 @@ require 'digest/md5'
 	@fb_user = FacebookUser.all
   end
   
-  def abcd
-    a = DateTime.new(2009,01,01,0,0,0)
-    
-    @u = User.new
-    @u.email = params[:email]
-    @u.name = params[:name]
-    @u.password = params[:password]
-    @u.created_date = Time.now.in_time_zone('Seoul')
-    @u.save
-		#redirect_to '/'
-
-    
-  end
-
   def signup
     @check = Hash.new
     
@@ -81,21 +67,74 @@ require 'digest/md5'
 
   def signout
 		token = Token.where(utoken: params[:u_token]).take
-		token.destroy 
-    redirect_to '/'
-    
+			@check = Hash.new
+			@check={"success":false, "comment":"서버에 토큰값이 없습니다."}
+		if token.nil?
+			respond_to do |format|
+				format.json { render json: @check }
+			end
+		else
+			token.destroy 
+			@check = {"success":true, "comment":"로그아웃 성공"}
+			respond_to do |format|
+				format.json { render json: @check }
+			end
+		end
+		
   end
   
   def fb_create
-	user = FacebookUser.omniauth(env['omniauth.auth'])
-	session[:user_id] = user.id
-	redirect_to '/'
+  
+		face_user = FacebookUser.omniauth(env['omniauth.auth'])
+		@check = Hash.new
+		@check = {"success":false,"comment":"로그인 실패"}
+		unless face_user.nil?
+			if User.exists?(email: face_user.email)
+				user = User.where(email: face_user.email).take
+				mytoken = Token.new
+				mytoken.utoken = loop do 
+					random_token = SecureRandom.urlsafe_base64(nil, false)
+					break random_token unless Token.exists?(utoken: random_token)
+				end
+				mytoken.user_id = user.id
+				mytoken.save
+				user.user_token = mytoken.utoken 
+				user.facebook_token = face_user.oauth_token
+				user.save
+				@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token}
+			else
+				user = User.new
+				user.email = face_user.email
+				user.name = face_user.name
+				user.facebook_token = face_user.oauth_token
 
+				mytoken = Token.new
+				mytoken.utoken = loop do
+      	random_token = SecureRandom.urlsafe_base64(nil, false)
+      	break random_token unless Token.exists?(utoken: random_token)
+    		end	
+				mytoken.user_id = user.id
+      	mytoken.save
+				user.user_token = mytoken.utoken
+				user.save
+				@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token}
+			end
+		end
+	   
+    respond_to do |format|
+        format.json { render json: @check }   
+      end
+	
   end
 
   def fb_destroy
-	session[:user_id] = nil
-	redirect_to '/'
+		@check = Hash.new
+		token = Token.where(utoken: params[:u_token]).take
+		token.destroy 
+		@check = {"success":true, "comment":"로그아웃되었습니다."}
+			respond_to do |format|
+				format.json {render json: @check }
+			end
   end
   
   def user #유저 정보보기

@@ -2,11 +2,10 @@
 <p>Find me in app/views/home/index.html.erb</p>
 
 hello ~! <br>
-<hr>
-페이스북유저<br> 
-<% @fb_user.each do |fbuser| %>
-<%= fbuser.id %> : <%= fbuser.name %>:<%= fbuser.email %><br>
-<% end %>
+
+로그인정보: 
+<hr> 페이스북유저<br> <% @fb_user.each do |fbuser| %>
+<%= fbuser.id %> : <%= fbuser.name %>:<%= fbuser.email %><br> <% end %>
 <hr>
 서버내 토큰 <br>
 <% @c.each do |token| %>
@@ -17,7 +16,7 @@ User아이디:<%= token.user_id %><br>
 <hr>
 현재 회원가입 유저:<br>
 <% @d.each do |user| %>
-ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.user_token %><br>
+ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.user_token %> facebook_token:<%=user.facebook_token%><br>
 <% end %>
 <hr>
 이용약관 : <% @term.each do |term| %>
@@ -87,9 +86,9 @@ hello <%= link_to "sign in with facebook!!!!!!!!!", "/auth/facebook", id: "sign_
 </div>
 <br>
 로그인된 정보</br>
-세션[:user_id] =  <%= session[:user_id] %><br>
 
 페북로그인 정보<br>
+
 <% @b.each do |user| %>
 	프로바이더:<%= user.provider %> <br>
 	uid :<%= user.uid %> <br>
@@ -97,6 +96,7 @@ hello <%= link_to "sign in with facebook!!!!!!!!!", "/auth/facebook", id: "sign_
  token :<%= user.oauth_token %><br>
  expires :<%= user.oauth_expires_at %><br>
  email : <%= user.email %><br>
+<hr>
  <% end %>
 
 
