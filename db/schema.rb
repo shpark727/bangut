@@ -112,8 +112,11 @@ ActiveRecord::Schema.define(version: 1) do
 
   add_index "share_log", ["post_id"], name: "007_idx", using: :btree
 
-  create_table "term", primary_key: "term_code", force: :cascade do |t|
-    t.text "term_content", limit: 4294967295
+  create_table "term", force: :cascade do |t|
+    t.string   "term_code",    limit: 8
+    t.text     "term_content", limit: 4294967295
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "token", force: :cascade do |t|

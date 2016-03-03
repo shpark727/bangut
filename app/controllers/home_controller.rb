@@ -68,7 +68,7 @@ require 'digest/md5'
   def signout
 		token = Token.where(utoken: params[:u_token]).take
 			@check = Hash.new
-			@check={"success":false, "comment":"서버에 토큰값이 없습니다."}
+			@check={"success":false, "comment":"로그인 해주세요."}
 		if token.nil?
 			respond_to do |format|
 				format.json { render json: @check }
@@ -101,7 +101,7 @@ require 'digest/md5'
 				user.user_token = mytoken.utoken 
 				user.facebook_token = face_user.oauth_token
 				user.save
-				@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token}
+				@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token,"fb_token":user.facebook_token}
 			else
 				user = User.new
 				user.email = face_user.email
@@ -117,11 +117,12 @@ require 'digest/md5'
       	mytoken.save
 				user.user_token = mytoken.utoken
 				user.save
-				@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token}
+				@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token,"fb_token":user.facebook_token}
 			end
 		end
 	   
     respond_to do |format|
+				format.html { render html: @check }
         format.json { render json: @check }   
       end
 	
@@ -233,10 +234,11 @@ require 'digest/md5'
   end
   
   def terms #이용약관 보기
-    @term = Term.last(1)
-    
+		last_term = Term.order("created_at").last
+
+ 
     respond_to do |format|
-        format.json {render json: @term}
+				format.json {render json:	last_term}
       end
       
   end

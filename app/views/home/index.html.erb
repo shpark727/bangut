@@ -3,9 +3,13 @@
 
 hello ~! <br>
 
-로그인정보: 
+-- 로그인정보-- 
 <hr> 페이스북유저<br> <% @fb_user.each do |fbuser| %>
-<%= fbuser.id %> : <%= fbuser.name %>:<%= fbuser.email %><br> <% end %>
+<%= fbuser.id %> //  name: <%= fbuser.name %> // email:  <%= fbuser.email %>  // oauth_token :  <%= fbuser.oauth_token %>// UID:<%=fbuser.uid%>
+//provider : <%= fbuser.provider%><br>
+ 만료 시간 : 
+
+ <% end %>
 <hr>
 서버내 토큰 <br>
 <% @c.each do |token| %>

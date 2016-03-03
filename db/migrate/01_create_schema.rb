@@ -101,8 +101,10 @@ class CreateSchema < ActiveRecord::Migration
 
   add_index "share_log", ["post_id"], name: "007_idx", using: :btree
 
-  create_table "term", primary_key: "term_code", force: :cascade do |t|
+  create_table "term", force: :cascade do |t|
+		t.string "term_code", limit: 8
     t.text "term_content", limit: 4294967295
+		t.timestamps
   end
 
   create_table "univ_category", force: :cascade do |t|
