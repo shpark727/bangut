@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'iamport', github: 'iamport/iamport-rest-client-ruby'
+
 gem 'figaro' #secret.yml 위해 
 gem 'activesupport', '~> 4.2', '>= 4.2.4'
 gem 'carrierwave'

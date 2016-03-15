@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/iamport/iamport-rest-client-ruby.git
+  revision: 18bb842cb7bb7924f40ceee2cd1abdfbd75c61ed
+  specs:
+    iamport (0.1.1)
+      httparty
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -178,6 +185,9 @@ GEM
     hashie (3.4.3)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
+    httparty (0.13.7)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
     i18n (0.7.0)
     inflecto (0.0.2)
     ipaddress (0.8.0)
@@ -312,6 +322,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   figaro
   fog
+  iamport!
   jbuilder (~> 2.0)
   jquery-rails
   mailgun_rails

@@ -326,7 +326,10 @@ require 'digest/md5'
 			user = User.find(token.user_id)
 				unless user.nil?
 	   	 		newpost = WantedBoard.new
-    			newpost.univ_id = univ.id
+					unless univ.nil?
+    				newpost.univ_id = univ.id
+					else
+					end
     			newpost.witness_date = params[:witness_date]
    				newpost.is_place_maps = params[:is_place_maps]
     			newpost.target_body = params[:target_body]
@@ -426,6 +429,7 @@ require 'digest/md5'
   end
   
   def pay  #결재하기
+		
   end
   
   def pay_term #결재 약관보기
@@ -557,12 +561,13 @@ require 'digest/md5'
 				myimages.user_id = user.id
     		myimages.save
 				user.profile_img =myimages.id 
-				check = {"success":true,"comment":"이미지 업로드에 성공하였습니다."}
 				user.save
+				check = {"success":true,"comment":"이미지 업로드에 성공하였습니다.","image_address":myimages.path.url}
 			end
 		end
 			respond_to do |format|
 				format.json {render json: check}
+				format.html {render html: check}
 			end
 		
     #myimage.path.url => 이렇게하면 출력! 

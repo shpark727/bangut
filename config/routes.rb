@@ -31,7 +31,8 @@ Rails.application.routes.draw do
 	get 'version' => 'home#versions'
 	post 'image_upload' => 'home#image_upload'
 	get 'fb_share/' => 'home#fb_share'
-
+	post 'pay' => 'home#pay'
+	get 'pay' => 'home#pay'
 
 
 
