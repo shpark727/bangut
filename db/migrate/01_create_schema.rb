@@ -40,6 +40,12 @@ class CreateSchema < ActiveRecord::Migration
   end
 	 add_index "image_pool", ["user_id"], name: "011_idx", using: :btree
 
+	create_table "draw_pool", force: :cascade do |t|
+		t.string "path", limit: 64
+		t.integer "post_id", limit: 4
+	end
+	add_index "draw_pool",["post_id"], name: "050_idx", using: :btree
+	
 
   create_table "notice", force: :cascade do |t|
     t.string   "title",        limit: 255
@@ -137,6 +143,7 @@ class CreateSchema < ActiveRecord::Migration
     t.integer  "reward",         limit: 4
     t.integer  "user_id",        limit: 4
     t.integer  "count_share",    limit: 4,        default: 0
+		t.string  "draw_img", 			 limit: 255
     t.integer  "choosed_id",     limit: 4
 		t.timestamps null: false
   end
@@ -167,6 +174,7 @@ class CreateSchema < ActiveRecord::Migration
 
   add_foreign_key "share_log", "wanted_board", column: "post_id", name: "007"
 	add_foreign_key "image_pool", "user", column: "user_id", name: "011"
+	add_foreign_key "draw_pool", "wanted_board", column: "post_id", name: "050"
 
   #add_foreign_key "user", "image_pool", column: "profile_img", name: "009"
   add_foreign_key "wanted_board", "univ_category", column: "univ_id", name: "004"

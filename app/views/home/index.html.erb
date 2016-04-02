@@ -4,7 +4,20 @@
 <p>Find me in app/views/home/index.html.erb</p>
 
 hello ~! <br>
-
+<hr>
+-------------------------결재-----------------<br>
+hidden type / item_name && item_amount <br>
+<form action="pay" method="POST">
+	<input type="hidden" name="item_name" value="스타벅스 아메리카노(tall)">
+	<input type="hidden" name="item_amount" value="4100">	
+	<input type="submit" value="스벅 아메리카노 결재하기">
+</form>
+<form action="pay" method="POST">
+	<input type="hidden" name="item_name" value="스타벅스 아이스 아메리카노(tall)">
+	<input type="hidden" name="item_amount" value="4100">
+	<input type="submit" value="스벅 아이스아메리카노 결재">
+</form>
+<hr>
 -- 로그인정보-- 
 <hr> 페이스북유저<br> <% @fb_user.each do |fbuser| %>
 <%= fbuser.id %> //  name: <%= fbuser.name %> // email:  <%= fbuser.email %>  // oauth_token :  <%= fbuser.oauth_token %>// UID:<%=fbuser.uid%>
@@ -32,7 +45,7 @@ ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.u
 게시된 글 목록<br>
 <% unless @list.nil? %>
 <% @list.each do |list| %>
-<%= list.id%> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%><br>
+<%= list.id%> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%> 몽타주:<%= list.draw_img %><br>
 	<% list.wanted_comments.each do |comment| %>
 	댓글=>	<%= comment.id %> 글쓴이 ID<%= comment.user_id %>내용:<%= comment.content%> <h5><%= comment.created_at%></h5><br>
 	<% end %>
@@ -48,6 +61,20 @@ ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.u
 <% @img.each do |img| %>
 이미지아이디:<%= img.id%> 유저아이디:<%= img.user_id%>이미지 url: <%= img.path.url %><br>
 <% end %>
+
+<hr>
+drawing 리스트
+<% @draw.each do |draw| %>
+	크로키 아이디: <%= draw.id%> 게시글아이디:<%=draw.post_id %> 크로키 url: <%= draw.path.url %><br>
+<% end %>
+<hr>
+게시글 글쓰기 예시!! a.k.a create_post
+<form action="create_post" method="post" enctype="multipart/form-data">
+<input type="hidden" name="u_token" value="_mFKbmRwxEvMS-HqD5txMw">
+그녀를 본 학교 : <input type="string" name="univ_name"><br>
+메모 :  <input type="string" name="talk_to"><br>
+이미지:<input type="file" name="image_file"><br>
+<input type="submit" value="아!">
 <hr>
 <form action="signup" method="post" >
   email: <input type="string" name="email"><br>
@@ -62,7 +89,7 @@ ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.u
 
 <form action="image_upload" method="post" enctype="multipart/form-data">	
 	image: <input type="file" name="image_file"></br>
-	<input type="hidden" name="u_token" value="4h82bk14SbW1HZ4TFLowjA">
+	<input type="hidden" name="u_token" value="_mFKbmRwxEvMS-HqD5txMw">
 	
 	<input type="submit" value="submit">
 </form>

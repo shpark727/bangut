@@ -1,93 +1,90 @@
-
-<h1>결제창</h1>
+<link rel="stylesheet" type="text/css" href="/assets/pay.css">
 <script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment-1.1.1.js"></script>
 
+<section style="background-color:#F5F5DC">
 
-<section style="background-color:#cc66ff">
-<div class="container" style="padding: 50px 0 50px 0;"> 
-<div id="TEST" class="col-md-8 col-md-offset-1 col-xs-11 ">
+<h2 style="text-align:center">결제</h2>
+
+<div class="container-fluid" style="padding: 50px 0 50px 0;"> 
+
+<div id="TEST" >
 	<form name="form_payment" id="form_payment" class="form_horizontal">
 		<div class="form-group row">
-			<label for="pg_provider" class="col-md-2 col-xs-2 form-control-label">지원 PG사</label>
-			<div class="col-md-10 col-xs-10">
-			<select name="pg_provider" id="pg-provider" class="form-control">
-				<option value="html5_inicis">KG이니시스(웹표준결제)</option>
-			</select>
+			<label for="pg_provider" class="col-md-3 col-xs-3 form-control-label">지원 PG사</label>
+			<div class="col-md-9 col-xs-9">
+				<select name="pg_provider" id="pg-provider" class="form-control">
+<!--				<option value="danal" data-option="phone">다날-휴대폰소액결제전용</option>-->
+					<option value="html5_inicis">KG이니시스(웹표준결제)</option>
+				</select>
 			</div>
 		</div> 
 
 		<div class="form-group row">
-			<label for="pay_method" class="col-md-2 col-xs-2 form-control-label">결제수단</label>
-			<div class="col-md-10 col-xs-10">
-			<select name="pay_method" id="pay_method" class="form-control">
+			<label for="pay_method" class="col-md-3 col-xs-3 form-control-label">결제수단</label>
+			<div class="col-md-9 col-xs-9">
+				<select name="pay_method" id="pay_method" class="form-control">
 				<option value="phone">휴대폰소액결제</option>
-			</select>
+				</select>
 			</div>
 		</div>
 	
 		<div class="form-group row ">
-			<label for="merchant_uid" class="col-md-2 col-xs-2 form-control-label">주문번호</label>
-			<div class="col-md-10 col-xs-10">
-			<input type="text" name="merchant_uid" id="merchant_uid" value class="form-control">
+			<label for="merchant_uid" class="col-md-3 col-xs-3 form-control-label">주문번호</label>
+			<div class="col-md-9 col-xs-9">
+				<input type="text" name="merchant_uid" id="merchant_uid" value class="form-control" disabled>
+			</div>
+		</div>
+
+	<div class="form-group row">
+			<label for="name" class="col-md-3 col-xs-3 form-control-label">상품명</label>
+			<div class="col-md-9 col-xs-9">
+				<input type="text" name="name" id="name" value="<%= @a %>" class="form-control" disabled>
+			</div>
+	</div>
+	<div class="form-group row">
+			<label for="amount" class="col-md-3 col-xs-3 form-control-label">결재금액</label>
+			<div class="col-md-9 col-xs-9">
+				<input type="tel" name="amount" id="amount" value="<%=@b %>" class="form-control" disabled>
+			</div>
+	</div>
+	<div class="form-group row">
+			<label for="buyer_email" class="col-md-3 col-xs-3 form-control-label">이메일주소</label>
+			<div class="col-md-9 col-xs-9">
+				<input type="text" name="buyer_email" id="buyer_email"  class="form-control">
+			</div>
+	</div>
+	<div class="form-group row">
+			<label for="buyer_name" class="col-md-3 col-xs-3 form-control-label">성함</label>
+			<div class="col-md-9 col-xs-9">
+				<input type="text" name="buyer_name" id="buyer_name"  class="form-control">
+			</div>
+	</div>
+	<div class="form-group row">
+			<label for="buyer_tel" class="col-md-3 col-xs-3 form-control-label">전화번호</label>
+			<div class="col-md-9 col-xs-9">
+				<input type="text" name="buyer_tel" id="buyer_tel" class="form-control">
+			</div>
+	</div>
+	<div class="form-group row">
+			<label for="buyer_memo" class="col-md-3 col-xs-3 form-control-label">메모</label>
+			<div class="col-md-9 col-xs-9">
+				<input type="text" name="buyer_memo" id="buyer_memo" placeholder="판매자에게 남기실 메모를 입력해주세요"  class="form-control">
 			</div>
 	</div>
 
-	<div class="form-group row">
-			<label for="name" class="col-md-2 col-xs-2 form-control-label">결제명</label>
-			<div class="col-md-10 col-xs-10">
-			<input type="text" name="name" id="name" value="결제테스트" class="form-control">
-			</div>
-	</div>
-	<div class="form-group row">
-			<label for="amount" class="col-md-2 col-xs-2 form-control-label">금액</label>
-			<div class="col-md-10 col-xs-10">
-			<input type="tel" name="amount" id="amount" value="1004" class="form-control">
-			</div>
-	</div>
-	<div class="form-group row">
-			<label for="buyer_email" class="col-md-2 col-xs-2 form-control-label">이메일주소</label>
-			<div class="col-md-10 col-xs-10">
-			<input type="text" name="buyer_email" id="buyer_email" value="shpark727@gmail.com" class="form-control">
-			</div>
-	</div>
-	<div class="form-group row">
-			<label for="buyer_name" class="col-md-2 col-xs-2 form-control-label">성함</label>
-			<div class="col-md-10 col-xs-10">
-			<input type="text" name="buyer_name" id="buyer_name" value="홍길동" class="form-control">
-			</div>
-	</div>
-	<div class="form-group row">
-			<label for="buyer_tel" class="col-md-2 col-xs-2 form-control-label">전화번호</label>
-			<div class="col-md-10 col-xs-10">
-			<input type="text" name="buyer_tel" id="buyer_tel" value="070-111-1111" class="form-control">
-			</div>
-	</div>
-	<div class="form-group row">
-			<label for="buyer_addr" class="col-md-2 col-xs-2 form-control-label">주소</label>
-			<div class="col-md-10 col-xs-10">
-			<input type="text" name="buyer_addr" id="buyer_addr" value="성남시 분당구" class="form-control">
-			</div>
-	</div>
-	<div class="form-group row">
-			<label for="buyer_postcode" class="col-md-2 col-xs-2 form-control-label">우편번호</label>
-			<div class="col-md-10 col-xs-10">
-			<input type="text" name="buyer_postcode" id="buyer_postcode" value="13597" class="form-control">
-			</div>
-	</div>
-</div> <!-- end of row div -->
 </form>
-	<div id="responser"></div>
+
+	<div id="responser" style="text-align:center;"><br></div>
 	<div class="row">
-	<div class="col-md-4 col-xs-4"></div>
-	<div class="col-md-4 col-xs-4">
-	<a id="requester" class="btn btn-primary">결제하기</a>
+		<div class="col-md-4 col-xs-4"></div>
+		<div class="col-md-4 col-xs-4">
+		<a id="requester" class="btn btn-primary">결제하기</a>
+		</div>
+		<div class="col-md-4 col-xs-4"></div>
 	</div>
-	<div class="col-md-4 col-xs-4"></div>
-	</div>
+
 </div> <!--end of TEST div -->
 </div> <!-- end of container div -->
-
-
 
 </section>
 
@@ -116,8 +113,7 @@ function callback() {
                 buyer_email:frm.buyer_email.value, 
                 buyer_name:frm.buyer_name.value, 
                 buyer_tel:frm.buyer_tel.value, 
-                buyer_addr:frm.buyer_addr.value,
-                buyer_postcode:frm.buyer_postcode.value,
+								buyer_memo:frm.buyer_memo.value,
                 //vbank_due:frm.vbank_due.value,
                 app_scheme:'iamporttest'
             }, function(rsp) {
@@ -154,6 +150,11 @@ function callback() {
             // 지원 pg사 추가 될 때마다 추가 바람.
             var provider = $(this).val(), help_text;
             switch(provider) {
+								case 'danal' : 
+										help_text = '실제 승인이 이루어진 테스트 결제건은 30분후 자동 취소처리됩니다.';
+										appendSelectOption();
+										break;
+
                 case 'inicis' :
                 case 'html5_inicis' :
                     help_text = '실제 승인이 이루어진 테스트 결제건은 자정에 이니시스에서 자동 취소처리합니다.';

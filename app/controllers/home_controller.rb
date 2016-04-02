@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
 
 require 'digest/md5'
-
+require 'digest/sha1'
 
   def index
 	@d = User.all
@@ -12,6 +12,7 @@ require 'digest/md5'
 	@univ = UnivCategory.all
 	@img = ImagePool.all	
 	@fb_user = FacebookUser.all
+	@draw = DrawPool.all
   end
   
   def signup
@@ -330,6 +331,11 @@ require 'digest/md5'
     				newpost.univ_id = univ.id
 					else
 					end
+					# 몽타주 크로키  저장  
+					myimages = DrawPool.new
+					myimages.path = params[:image_file]
+					myimages.save!
+					# 그 외 정보 
     			newpost.witness_date = params[:witness_date]
    				newpost.is_place_maps = params[:is_place_maps]
     			newpost.target_body = params[:target_body]
@@ -339,12 +345,23 @@ require 'digest/md5'
     			newpost.target_gen = params[:target_gen]
     			newpost.talk_to = params[:talk_to]
     			newpost.reward = params[:reward]
-    			newpost.user_id = user.id #######################################################이렇게 가능한가? a.id user_id 타입이 인티져던데.. 
+    			newpost.user_id = user.id #######################################################이렇게 가능한가? a.id user_id 타입이 인티져던데..
+					
+				#	newpost.draw_img = myimages.path.url
     			newpost.save
+		
+					if newpost
+						
+						myimages.post_id = newpost.id
+						myimages.save
+						newpost.draw_img = myimages.path.url
+						newpost.save!
+					else
+					end
    					if newpost.new_record?
       				@check = {"success":false, "comment":"Error. 다시 시도해주세요."}
 						else 
-      				@check = {"success":true, "comment":"good! 글이 성공적으로 게시되었습니다."}
+      				@check = {"success":true, "comment":"good! 글이 성공적으로 게시되었습니다.","크로키url": myimages.path.url}
    				  end
 				else
 				end
@@ -352,6 +369,7 @@ require 'digest/md5'
 		end
     respond_to do |format|
         format.json {render json: @check }
+				format.html {render html: @check }
       end
   end
   
@@ -429,6 +447,12 @@ require 'digest/md5'
   end
   
   def pay  #결재하기
+		
+		@a = params[:item_name];
+		@b = params[:item_amount];
+		
+		
+		
 		
   end
   

@@ -25,6 +25,13 @@ ActiveRecord::Schema.define(version: 1) do
     t.integer "bank_code", limit: 4
   end
 
+  create_table "draw_pool", force: :cascade do |t|
+    t.string  "path",    limit: 64
+    t.integer "post_id", limit: 4
+  end
+
+  add_index "draw_pool", ["post_id"], name: "050_idx", using: :btree
+
   create_table "facebook_user", force: :cascade do |t|
     t.integer  "provider",         limit: 8
     t.integer  "uid",              limit: 8
@@ -153,6 +160,7 @@ ActiveRecord::Schema.define(version: 1) do
     t.integer  "reward",         limit: 4
     t.integer  "user_id",        limit: 4
     t.integer  "count_share",    limit: 4,        default: 0
+    t.string   "draw_img",       limit: 255
     t.integer  "choosed_id",     limit: 4
     t.datetime "created_at",                                  null: false
     t.datetime "updated_at",                                  null: false
@@ -184,6 +192,7 @@ ActiveRecord::Schema.define(version: 1) do
   add_index "withdraw", ["bank_id"], name: "009_idx", using: :btree
   add_index "withdraw", ["user_id"], name: "008_idx", using: :btree
 
+  add_foreign_key "draw_pool", "wanted_board", column: "post_id", name: "050"
   add_foreign_key "image_pool", "user", name: "011"
   add_foreign_key "share_log", "wanted_board", column: "post_id", name: "007"
   add_foreign_key "wanted_board", "univ_category", column: "univ_id", name: "004"
