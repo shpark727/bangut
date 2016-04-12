@@ -8,8 +8,10 @@
 
 
 
-	Term.create( [ term_code: '1.0', term_content: 'this is terms version1.'] )
-	Term.create( [ term_code: '1.1', term_content: 'this is terms version1.1'])
+	Term.create( [ term_code: '1.0', term_content: 'this is terms version 1.0'] )
+	Term.create( [ term_code: '1.1', term_content: 'this is terms version 1.1'])
+
+	PayTerm.create( [ term_code: '1.0', term_content: 'this is pay_term vision1.0'] )
 
 	UnivCategory.create( [univ_name: 'ajou']) 
 	UnivCategory.create( [univ_name: 'korea'])

@@ -33,11 +33,11 @@ ActiveRecord::Schema.define(version: 1) do
   add_index "draw_pool", ["post_id"], name: "050_idx", using: :btree
 
   create_table "facebook_user", force: :cascade do |t|
-    t.integer  "provider",         limit: 8
-    t.integer  "uid",              limit: 8
+    t.string   "provider",         limit: 255
+    t.string   "uid",              limit: 255
     t.string   "name",             limit: 255
     t.string   "email",            limit: 255
-    t.integer  "oauth_token",      limit: 8
+    t.string   "oauth_token",      limit: 255
     t.datetime "oauth_expires_at"
   end
 
@@ -61,6 +61,20 @@ ActiveRecord::Schema.define(version: 1) do
     t.text     "content",    limit: 4294967295
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
+  end
+
+  create_table "pay_log", force: :cascade do |t|
+    t.string   "imp",        limit: 255
+    t.string   "merchant",   limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pay_term", force: :cascade do |t|
+    t.string   "term_code",    limit: 8
+    t.text     "term_content", limit: 4294967295
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "push_configurations", force: :cascade do |t|

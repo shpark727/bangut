@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root 'home#index'
 
-  
+ get 'first' => 'home#index' 
   get 'abcd' => 'home#abcd'
 	post 'abcd' => 'home#abcd'
 
@@ -15,13 +15,14 @@ Rails.application.routes.draw do
 	post 'edit_pw' => 'home#edit_pw_user'
 	post 'find_pw' => 'home#find_pw_user'
 	get 'terms' => 'home#terms'
+	get 'pay_term' =>'home#pay_term'
 	get 'post_list' => 'home#post_list'
 	get 'post_detail/:wanted_board_id' => 'home#post_detail'
 	get 'post_sort' => 'home#post_sort'
 	post 'create_post' => 'home#create_post'
 	post 'edit_post/:wanted_board_id' => 'home#edit_post'
 	post 'delete_post/:wanted_board_id' => 'home#delete_post'
-	get 'answer_post/:wanted_board_id/:wanted_reply' => 'home#answer_post'
+	post 'answer_post/:wanted_board_id/:wanted_reply' => 'home#answer_post'
 	post 'create_reply/:wanted_board_id' => 'home#create_reply'
 	post 'edit_reply/:reply_id' => 'home#edit_reply'
 	post 'delete_reply/:reply_id' => 'home#delete_reply'
@@ -33,6 +34,7 @@ Rails.application.routes.draw do
 	get 'fb_share/' => 'home#fb_share'
 	post 'pay' => 'home#pay'
 	get 'pay' => 'home#pay'
+	post 'paylog' => 'home#pay_log'
 
 
 

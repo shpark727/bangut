@@ -8,11 +8,13 @@ require 'digest/sha1'
 	@b= FacebookUser.all
 	@c = Token.all
 	@term = Term.all	
+	@pay_term = PayTerm.all
 	@list = WantedBoard.all	
 	@univ = UnivCategory.all
 	@img = ImagePool.all	
 	@fb_user = FacebookUser.all
 	@draw = DrawPool.all
+	@paylog = PayLog.all
   end
   
   def signup
@@ -85,42 +87,45 @@ require 'digest/sha1'
   end
   
   def fb_create
-  
-		face_user = FacebookUser.omniauth(env['omniauth.auth'])
-		@check = Hash.new
-		@check = {"success":false,"comment":"로그인 실패"}
-		unless face_user.nil?
-			if User.exists?(email: face_user.email)
-				user = User.where(email: face_user.email).take
-				mytoken = Token.new
-				mytoken.utoken = loop do 
-					random_token = SecureRandom.urlsafe_base64(nil, false)
-					break random_token unless Token.exists?(utoken: random_token)
-				end
-				mytoken.user_id = user.id
-				mytoken.save
-				user.user_token = mytoken.utoken 
-				user.facebook_token = face_user.oauth_token
-				user.save
-				@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token,"fb_token":user.facebook_token}
-			else
-				user = User.new
-				user.email = face_user.email
-				user.name = face_user.name
-				user.facebook_token = face_user.oauth_token
 
-				mytoken = Token.new
-				mytoken.utoken = loop do
-      	random_token = SecureRandom.urlsafe_base64(nil, false)
-      	break random_token unless Token.exists?(utoken: random_token)
-    		end	
-				mytoken.user_id = user.id
-      	mytoken.save
-				user.user_token = mytoken.utoken
-				user.save
-				@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token,"fb_token":user.facebook_token}
-			end
-		end
+  	@check = Hash.new
+		@check = {"success":false,"comment":"로그인 실패"}
+
+		face_user = FacebookUser.omniauth(env['omniauth.auth'])
+				unless face_user.nil? #  페이스북 계정으로 로그인해 callback 받아온 경우 정상 작동!
+						if User.exists?(email: face_user.email) # 이전에 등록한적이 있을 때! 
+								user = User.where(email: face_user.email).take
+								mytoken = Token.new
+								mytoken.utoken = loop do 
+									random_token = SecureRandom.urlsafe_base64(nil, false)
+									break random_token unless Token.exists?(utoken: random_token)
+								end
+
+								mytoken.user_id = user.id
+								mytoken.save
+								user.user_token = mytoken.utoken 
+								user.facebook_token = face_user.oauth_token
+								user.save
+								@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token,"fb_token":user.facebook_token}
+						else #페이스북 계정으로 처음 로그인 때!
+								user = User.new
+								user.email = face_user.email
+								user.name = face_user.name
+								user.facebook_token = face_user.oauth_token
+								user.save
+								mytoken = Token.new
+									mytoken.utoken = loop do
+ 			 	 		   		random_token = SecureRandom.urlsafe_base64(nil, false)
+     						 		break random_token unless Token.exists?(utoken: random_token)
+    							end	
+									mytoken.user_id = user.id
+     					 		mytoken.save
+									user.user_token = mytoken.utoken
+									user.save
+								@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token,"fb_token":user.facebook_token}
+							
+						end # 
+			end # end unless 
 	   
     respond_to do |format|
 				format.html { render html: @check }
@@ -132,11 +137,20 @@ require 'digest/sha1'
   def fb_destroy
 		@check = Hash.new
 		token = Token.where(utoken: params[:u_token]).take
-		token.destroy 
-		@check = {"success":true, "comment":"로그아웃되었습니다."}
+		unless token.nil?
+			@user = User.find(token.user_id)
+			token.destroy 
+		
+			@check = {"success":true, "comment":"로그아웃되었습니다."}
+		#redirect_to "https://www.facebook.com/logout.php?access_token=#{@user.facebook_token}&confirm=#{1}&next=#{"/"}"
+		
+		else
+			@check ={"success":false, "comment":"로그인해주세요."}	
+		end
 			respond_to do |format|
-				format.json {render json: @check }
-			end
+					format.json {render json: @check }
+					format.html {render html: @check }
+					end
   end
   
   def user #유저 정보보기
@@ -240,6 +254,7 @@ require 'digest/sha1'
  
     respond_to do |format|
 				format.json {render json:	last_term}
+				format.html {render html: last_term}
       end
       
   end
@@ -254,10 +269,14 @@ require 'digest/sha1'
   end
   
   def post_list #현상수배 리스트
-		post = WantedBoard.all.order('created_at DESC').paginate(:page => params[:page], :per_page => 5)
+
+		
+		post = WantedBoard.joins(:user ,:univ_category).select("wanted_board.*, user.name , univ_category.univ_name").order('created_at DESC').paginate(:page => params[:page], :per_page => 5)
+		
 
     respond_to do |format|
       format.json {render json: post}
+			format.html {render html: post}
     end
   end
   
@@ -433,7 +452,7 @@ require 'digest/sha1'
 		else
 			user = User.find(token.user_id)
 			post = WantedBoard.find(params[:wanted_board_id])
-			if post.user_id == user.id	
+			if (post.user_id == user.id) && (post.choosed_id.nil?)	
 					post.choosed_id = params[:wanted_reply]
 					post.save
 					@check = {"success":true, "comment":"답변을 채택하였습니다."}
@@ -442,6 +461,7 @@ require 'digest/sha1'
 		end
 			respond_to do |format|
 				format.json { render json: @check }
+				format.html { render html: @check }
 			end
 
   end
@@ -451,12 +471,25 @@ require 'digest/sha1'
 		@a = params[:item_name];
 		@b = params[:item_amount];
 		
-		
-		
-		
   end
+	
+	def pay_log
+		pay_log = PayLog.new
+		pay_log.imp = params[:imp_uid]
+		pay_log.merchant = params[:merchant_uid]
+		pay_log.save	
+		
+		redirect_to '/'
+	end
   
   def pay_term #결재 약관보기
+		last_payterm = PayTerm.order("created_at").last
+
+ 
+    respond_to do |format|
+				format.json {render json:	last_payterm}
+      end
+  
   end
   
   def create_reply #댓글쓰기
@@ -476,6 +509,7 @@ require 'digest/sha1'
     end
 			respond_to do |format|
 				format.json {render json: @check}
+				format.html {render html: @check}
 				end
   end
   

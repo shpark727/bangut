@@ -5,7 +5,15 @@
 
 hello ~! <br>
 <hr>
--------------------------결재-----------------<br>
+---------- 결재 정보 ----------<br>
+<% @paylog.each do |pay| %>
+결재번호:<%= pay.id %> <br>
+imp_uid: <%= pay.imp%><br>
+merchant_uid: <%= pay.merchant %><br>
+<% end %>
+
+<hr>
+-------------------------결재창-----------------<br>
 hidden type / item_name && item_amount <br>
 <form action="pay" method="POST">
 	<input type="hidden" name="item_name" value="스타벅스 아메리카노(tall)">
@@ -19,10 +27,16 @@ hidden type / item_name && item_amount <br>
 </form>
 <hr>
 -- 로그인정보-- 
-<hr> 페이스북유저<br> <% @fb_user.each do |fbuser| %>
-<%= fbuser.id %> //  name: <%= fbuser.name %> // email:  <%= fbuser.email %>  // oauth_token :  <%= fbuser.oauth_token %>// UID:<%=fbuser.uid%>
-//provider : <%= fbuser.provider%><br>
- 만료 시간 : 
+<hr> 
+<h3>페이스북유저</h3><br> 
+<% @fb_user.each do |fbuser| %>
+페북유저ID:<%= fbuser.id %> <br>
+name: <%= fbuser.name %> <br>
+email:  <%= fbuser.email %>  <br>
+oauth_token :  <%= fbuser.oauth_token %> <br>
+UID:<%=fbuser.uid%><br>
+provider : <%= fbuser.provider%><br>
+ 만료 시간 :<%= fbuser.oauth_expires_at %><br> 
 
  <% end %>
 <hr>
@@ -39,16 +53,31 @@ ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.u
 <% end %>
 <hr>
 이용약관 : <% @term.each do |term| %>
-<%= term.term_content %>
+<%= term.term_content %><br>
 <% end %><br>
+결재 이용약관 : <% @pay_term.each do |x| %>
+<%= x.term_code %>,<%= x.term_content %><br>
+<% end%><br>
 <hr>
+
 게시된 글 목록<br>
 <% unless @list.nil? %>
 <% @list.each do |list| %>
-<%= list.id%> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%> 몽타주:<%= list.draw_img %><br>
+글ID: <%= list.id%> 글쓴이:<%= list.user_id%> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%> 몽타주:<%= list.draw_img %> 채택된댓글: <%= list.choosed_id %><br>
 	<% list.wanted_comments.each do |comment| %>
-	댓글=>	<%= comment.id %> 글쓴이 ID<%= comment.user_id %>내용:<%= comment.content%> <h5><%= comment.created_at%></h5><br>
+	&nbsp;&nbsp;[댓글<%= comment.id %>] 글쓴이ID : <%= comment.user_id %>  내용:<%= comment.content%> <%= comment.created_at%> &nbsp;&nbsp; 
+<form action=answer_post/<%=list.id %>/<%= comment.id%> method="POST">
+	<input type="hidden" name="u_token" value="5CDiOfV9ujXuCDVp-FsqvQ">
+	<input type="submit" value="채택하기">
+</form>
+<br>
 	<% end %>
+댓글쓰기 
+<form action=create_reply/<%=list.id%> method="POST">
+<input type="hidden" value="W3TAuLhQbcJc_HJCxBizYQ" name="u_token">
+<input type="string" name="content">
+<input type="submit" value="댓글쓰기">
+</form>
 <% end%> <br>
 <% else %>
 <% end %>
@@ -70,11 +99,12 @@ drawing 리스트
 <hr>
 게시글 글쓰기 예시!! a.k.a create_post
 <form action="create_post" method="post" enctype="multipart/form-data">
-<input type="hidden" name="u_token" value="_mFKbmRwxEvMS-HqD5txMw">
+<input type="hidden" name="u_token" value="5CDiOfV9ujXuCDVp-FsqvQ">
 그녀를 본 학교 : <input type="string" name="univ_name"><br>
 메모 :  <input type="string" name="talk_to"><br>
 이미지:<input type="file" name="image_file"><br>
 <input type="submit" value="아!">
+
 <hr>
 <form action="signup" method="post" >
   email: <input type="string" name="email"><br>
@@ -107,7 +137,11 @@ hello <%= link_to "sign in with facebook!!!!!!!!!", "/auth/facebook", id: "sign_
 
 <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
 </fb:login-button>
-<a href="logout">로그아웃</a>
+
+<form action="logout" method="post">
+	<input type="hidden" value="IIaRqJUAoGRMqV5JJftGqw" name="u_token">
+	<input type="submit" value="로그아웃">
+</form>
 
 <div id="status">
 </div>
