@@ -11,7 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 1) do
+ActiveRecord::Schema.define(version: 20160414090404) do
+
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string   "namespace",     limit: 255
+    t.text     "body",          limit: 65535
+    t.string   "resource_id",   limit: 255,   null: false
+    t.string   "resource_type", limit: 255,   null: false
+    t.integer  "author_id",     limit: 4
+    t.string   "author_type",   limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
+  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
+  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "app_version", primary_key: "version_code", force: :cascade do |t|
     t.string   "version_name", limit: 64
@@ -124,6 +139,14 @@ ActiveRecord::Schema.define(version: 1) do
     t.boolean "onoff", default: false, null: false
   end
 
+  create_table "reward_item", force: :cascade do |t|
+    t.integer  "item_code",  limit: 8
+    t.string   "name",       limit: 255
+    t.integer  "price",      limit: 8
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "share_log", force: :cascade do |t|
     t.integer  "post_id",    limit: 4, null: false
     t.string   "share_type", limit: 8, null: false
@@ -161,23 +184,21 @@ ActiveRecord::Schema.define(version: 1) do
   end
 
   create_table "wanted_board", force: :cascade do |t|
-    t.integer  "univ_id",        limit: 4
+    t.integer  "univ_id",       limit: 4
     t.datetime "witness_date"
     t.boolean  "is_place_maps"
-    t.string   "witness_place",  limit: 255
-    t.string   "target_body",    limit: 3
-    t.integer  "target_tall",    limit: 4
-    t.string   "target_hair",    limit: 3
-    t.string   "target_initial", limit: 16
-    t.string   "target_gen",     limit: 1
-    t.text     "talk_to",        limit: 16777215
-    t.integer  "reward",         limit: 4
-    t.integer  "user_id",        limit: 4
-    t.integer  "count_share",    limit: 4,        default: 0
-    t.string   "draw_img",       limit: 255
-    t.integer  "choosed_id",     limit: 4
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.string   "witness_place", limit: 255
+    t.string   "target_gen",    limit: 1
+    t.text     "talk_to",       limit: 16777215
+    t.integer  "reward",        limit: 4
+    t.integer  "user_id",       limit: 4
+    t.integer  "count_share",   limit: 4,                                 default: 0
+    t.string   "draw_img",      limit: 255
+    t.integer  "choosed_id",    limit: 4
+    t.datetime "created_at",                                                          null: false
+    t.datetime "updated_at",                                                          null: false
+    t.decimal  "lat",                            precision: 10, scale: 6
+    t.decimal  "lon",                            precision: 10, scale: 6
   end
 
   add_index "wanted_board", ["univ_id"], name: "004_idx", using: :btree

@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'activeadmin', github: 'activeadmin'
+
 gem 'iamport', github: 'iamport/iamport-rest-client-ruby'
 
 gem 'figaro' #secret.yml 위해 

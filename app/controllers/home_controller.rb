@@ -281,13 +281,22 @@ require 'digest/sha1'
   end
   
   def post_detail #현상수배글 상세보기
-    post = WantedBoard.find(params[:wanted_board_id]) ######################################이렇게 해두됨?.?
-    
-    unless post.nil?
-      respond_to do |format|
-        format.json {render json: post}
-      end
-    end
+		@post = WantedBoard.joins(:user , :univ_category ).select("wanted_board.*, user.name as user_name, univ_category.univ_name").where(id: params[:wanted_board_id]).take
+		@comments =  WantedComment.joins(:user).select("wanted_comment.*, user.name as user_name").where(wanted_board_id: params[:wanted_board_id]).all
+		if @comments.nil?
+			respond_to do |format|
+				format.json {render json: @post}
+			end
+		else
+			respond_to do |format|
+				format.json {render :json => { :post => @post, :comments =>@comments } }
+				end
+		end
+				
+		#if WantedComment.where(wanted_board_id: params[:wanted_board_id]).take.nil?
+		#	post = WantedBoard.joins(:user, :univ_category).select("wanted_board.*, user.name, univ_category.univ_name").where(id: params[:wanted_board_id])
+	#	else
+  #  	post = WantedBoard.joins(:user , :univ_category, :wanted_comments).select("DISTINCT wanted_board.*, user.name, univ_category.univ_name, wanted_comment.*").where(id: params[:wanted_board_id]) #find(params[:wanted_board_id 
   end
   
   def post_sort # 학교별,성별,금액별 소팅해서보기
@@ -338,7 +347,6 @@ require 'digest/sha1'
 
   def create_post #현상수배 글쓰기
 		token = Token.where(utoken: params[:u_token]).take
-    user = User.find(token.user_id)
 		univ = UnivCategory.where(univ_name: params[:univ_name]).take
     @check = Hash.new
    	@check = {"success":false} 
@@ -357,14 +365,13 @@ require 'digest/sha1'
 					# 그 외 정보 
     			newpost.witness_date = params[:witness_date]
    				newpost.is_place_maps = params[:is_place_maps]
-    			newpost.target_body = params[:target_body]
-    			newpost.target_hair = params[:target_hair]
-    			newpost.target_tall = params[:target_tall]
-    			newpost.target_initial = params[:target_initial]
+					newpost.lat = params[:lat]
+					newpost.lon = params[:lon]
     			newpost.target_gen = params[:target_gen]
     			newpost.talk_to = params[:talk_to]
     			newpost.reward = params[:reward]
-    			newpost.user_id = user.id #######################################################이렇게 가능한가? a.id user_id 타입이 인티져던데..
+    			newpost.user_id = user.id 
+					
 					
 				#	newpost.draw_img = myimages.path.url
     			newpost.save
@@ -404,11 +411,6 @@ require 'digest/sha1'
      	if edit.user_id == user.id ######################################################가능 ?.?
          	 edit.witness_date = params[:witness_date]
      	  	 edit.is_place_maps = params[:is_place_maps]
-      		 edit.witness_place = params[:witness_place]
-        	 edit.target_body = params[:target_body]
-      	   edit.target_hair = params[:target_hair]
-       	   edit.target_tall = params[:target_tall]
-           edit.target_initial = params[:target_initial]
            edit.target_gen = params[:target_gen]
            edit.talk_to = params[:talk_to]
            edit.reward = params[:reward]
@@ -419,6 +421,7 @@ require 'digest/sha1'
 		end
      respond_to do |format|
               format.json {render json: @check }
+							format.html {render html: @check }
             end
         
   end
@@ -559,8 +562,10 @@ require 'digest/sha1'
 		if token.nil?
 		else
 			user = User.find(token.user_id)
-			mypost = WantedBoard.where(:user_id => user.id).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)	
+			mypost = WantedBoard.joins(:user, :univ_category).select("wanted_board.*, user.name , univ_category.univ_name").where(:user_id => user.id).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)	
 		
+
+
     respond_to do |format|
         format.json {render json: mypost }
       end
@@ -578,16 +583,21 @@ require 'digest/sha1'
 			end
 		else
    		user = User.find(token.user_id) 
-    	mycomment = WantedComment.where(user_id: user.id).order('created_at DESC').paginate(:page => params[:page], :per_page => 5)
-    	respond_to do |format|
-        format.json {render json: mycomment }
-      end
+    	mycomment = WantedComment.joins(:user, :wanted_board).select("wanted_comment.*, user.name , wanted_board.choosed_id").where(user_id: user.id).order('created_at DESC').paginate(:page => params[:page], :per_page => 5)
+					if mycomment.nil?
+						mycomment = "댓글 내역이 없습니다."
+					else
+					end
+	
+	 		respond_to do |format|
+ 		     format.json {render json: mycomment }
+ 		   end
 		end
     
   end
   
   def notice #공지사항
-		notice = Notice.all.reverse
+		notice = Notice.order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
 
 		respond_to do |format|
 			format.json {render json: notice}

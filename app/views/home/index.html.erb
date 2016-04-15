@@ -63,18 +63,18 @@ ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.u
 게시된 글 목록<br>
 <% unless @list.nil? %>
 <% @list.each do |list| %>
-글ID: <%= list.id%> 글쓴이:<%= list.user_id%> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%> 몽타주:<%= list.draw_img %> 채택된댓글: <%= list.choosed_id %><br>
+글ID: <%= list.id%> 글쓴이:<%= list.user_id%> 드로잉:<%= list.draw_img %> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%> 몽타주:<%= list.draw_img %> 채택된댓글: <%= list.choosed_id %><br>
 	<% list.wanted_comments.each do |comment| %>
 	&nbsp;&nbsp;[댓글<%= comment.id %>] 글쓴이ID : <%= comment.user_id %>  내용:<%= comment.content%> <%= comment.created_at%> &nbsp;&nbsp; 
 <form action=answer_post/<%=list.id %>/<%= comment.id%> method="POST">
-	<input type="hidden" name="u_token" value="5CDiOfV9ujXuCDVp-FsqvQ">
+	<input type="hidden" name="u_token" value="d_Zxtra_v5Ps9Rs0h9NY_w">
 	<input type="submit" value="채택하기">
 </form>
 <br>
 	<% end %>
 댓글쓰기 
 <form action=create_reply/<%=list.id%> method="POST">
-<input type="hidden" value="W3TAuLhQbcJc_HJCxBizYQ" name="u_token">
+<input type="hidden" value="d_Zxtra_v5Ps9Rs0h9NY_w" name="u_token">
 <input type="string" name="content">
 <input type="submit" value="댓글쓰기">
 </form>
@@ -99,7 +99,7 @@ drawing 리스트
 <hr>
 게시글 글쓰기 예시!! a.k.a create_post
 <form action="create_post" method="post" enctype="multipart/form-data">
-<input type="hidden" name="u_token" value="5CDiOfV9ujXuCDVp-FsqvQ">
+<input type="hidden" name="u_token" value="x_Izn7LB0NUm902vSp-klg">
 그녀를 본 학교 : <input type="string" name="univ_name"><br>
 메모 :  <input type="string" name="talk_to"><br>
 이미지:<input type="file" name="image_file"><br>

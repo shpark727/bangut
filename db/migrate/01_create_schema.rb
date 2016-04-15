@@ -140,16 +140,19 @@ class CreateSchema < ActiveRecord::Migration
   end
 
   #add_index "user", ["profile_img"], name: "009_idx", using: :btree
+	
+	create_table "reward_item", force: :cascade do |t|
+		t.integer		"item_code",		limit: 8
+		t.string		"name",					limit: 255
+		t.integer 	"price",				limit: 16
+		t.timestamps null: false
+	end
 
   create_table "wanted_board", force: :cascade do |t|
     t.integer  "univ_id",        limit: 4
     t.datetime "witness_date"
     t.boolean  "is_place_maps"
     t.string   "witness_place",  limit: 255
-    t.string   "target_body",    limit: 3
-    t.integer  "target_tall",    limit: 4
-    t.string   "target_hair",    limit: 3
-    t.string   "target_initial", limit: 16
     t.string   "target_gen",     limit: 1
     t.text     "talk_to",        limit: 16777215
     t.integer  "reward",         limit: 4
@@ -159,6 +162,8 @@ class CreateSchema < ActiveRecord::Migration
     t.integer  "choosed_id",     limit: 4
 		t.timestamps null: false
   end
+	add_column :wanted_board, :lat, :decimal, {:precision=>10, :scale=>6}
+	add_column :wanted_board, :lon, :decimal, {:precision=>10, :scale=>6}
 
   add_index "wanted_board", ["univ_id"], name: "004_idx", using: :btree
   add_index "wanted_board", ["user_id"], name: "001_idx", using: :btree
