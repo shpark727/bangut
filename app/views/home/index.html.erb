@@ -1,4 +1,5 @@
 <h1>Home#index</h1>
+
 <script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment.js"></script>
 
 <p>Find me in app/views/home/index.html.erb</p>
@@ -67,14 +68,14 @@ ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.u
 	<% list.wanted_comments.each do |comment| %>
 	&nbsp;&nbsp;[댓글<%= comment.id %>] 글쓴이ID : <%= comment.user_id %>  내용:<%= comment.content%> <%= comment.created_at%> &nbsp;&nbsp; 
 <form action=answer_post/<%=list.id %>/<%= comment.id%> method="POST">
-	<input type="hidden" name="u_token" value="d_Zxtra_v5Ps9Rs0h9NY_w">
+	<input type="hidden" name="u_token" value="45qF-skE2m88LpMB94Z1IQ">
 	<input type="submit" value="채택하기">
 </form>
 <br>
 	<% end %>
 댓글쓰기 
 <form action=create_reply/<%=list.id%> method="POST">
-<input type="hidden" value="d_Zxtra_v5Ps9Rs0h9NY_w" name="u_token">
+<input type="hidden" value="45qF-skE2m88LpMB94Z1IQ" name="u_token">
 <input type="string" name="content">
 <input type="submit" value="댓글쓰기">
 </form>
@@ -99,7 +100,7 @@ drawing 리스트
 <hr>
 게시글 글쓰기 예시!! a.k.a create_post
 <form action="create_post" method="post" enctype="multipart/form-data">
-<input type="hidden" name="u_token" value="x_Izn7LB0NUm902vSp-klg">
+<input type="hidden" name="u_token" value="45qF-skE2m88LpMB94Z1IQ">
 그녀를 본 학교 : <input type="string" name="univ_name"><br>
 메모 :  <input type="string" name="talk_to"><br>
 이미지:<input type="file" name="image_file"><br>
