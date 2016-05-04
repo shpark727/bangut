@@ -36,6 +36,12 @@ Rails.application.routes.draw do
 	post 'pay' => 'home#pay'
 	get 'pay' => 'home#pay'
 	post 'paylog' => 'home#pay_log'
+	get 'univ_list' =>'home#univ_list'
+	post 'pay_refund' => 'home#pay_refund'
+	get 'item_list' => 'home#item_list'
+	post 'pay_list' => 'home#pay_list'
+
+	get 'pay_result' => 'home#pay_result'
 
 
 

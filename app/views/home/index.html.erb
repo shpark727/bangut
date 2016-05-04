@@ -1,23 +1,45 @@
-<h1>Home#index</h1>
-
+<h1>방금그사람, 방긋</h1>
+<form action="signin" method="post">
+	이메일 : <input type="string" name="email" ><br>
+	비밀번호 :<input type="password" name="password"><br>
+	<input type="submit" value="로그인"><br>
+</form>
 <script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment.js"></script>
 
-<p>Find me in app/views/home/index.html.erb</p>
 
-hello ~! <br>
+<br> <br>
+아이템리스트<br>
+<% @item_list.each do |item| %>
+네임 : <%= item.name %><br>
+코드 : <%= item.item_code %><br>
+가격 : <%= item.price %><br>
+<br>
+<% end %>
+
 <hr>
 ---------- 결재 정보 ----------<br>
 <% @paylog.each do |pay| %>
 결재번호:<%= pay.id %> <br>
+결재키 : <%= pay.pay_key %><br>
 imp_uid: <%= pay.imp%><br>
 merchant_uid: <%= pay.merchant %><br>
+user:id: <%=pay.user_id%><br>
+post_id: <%=pay.post_id%><br>
+item_id: <%=pay.item_id%><br>
+memo: <%= pay.memo %><br>
+tel: <%=pay.tel%><br>
+status: <%= pay.pay_status %><br>
+시간: <%= pay.created_at %><br>
+<br>
+
 <% end %>
 
 <hr>
 -------------------------결재창-----------------<br>
 hidden type / item_name && item_amount <br>
 <form action="pay" method="POST">
-	<input type="hidden" name="item_name" value="스타벅스 아메리카노(tall)">
+	<input type="hidden" name="item_code" value="스타벅스 아메리카노(tall)">
+	<input type="hidden" name="pay_key" value="eeeee">
 	<input type="hidden" name="item_amount" value="4100">	
 	<input type="submit" value="스벅 아메리카노 결재하기">
 </form>
@@ -64,7 +86,7 @@ ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.u
 게시된 글 목록<br>
 <% unless @list.nil? %>
 <% @list.each do |list| %>
-글ID: <%= list.id%> 글쓴이:<%= list.user_id%> 드로잉:<%= list.draw_img %> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%> 몽타주:<%= list.draw_img %> 채택된댓글: <%= list.choosed_id %><br>
+글ID: <%= list.id%> 글쓴이:<%= list.user_id%> 드로잉:<%= list.draw_img %> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%> 몽타주:<%= list.draw_img %> 채택된댓글: <%= list.choosed_id %>  글쓴시간:<%= list.witness_date%><br>
 	<% list.wanted_comments.each do |comment| %>
 	&nbsp;&nbsp;[댓글<%= comment.id %>] 글쓴이ID : <%= comment.user_id %>  내용:<%= comment.content%> <%= comment.created_at%> &nbsp;&nbsp; 
 <form action=answer_post/<%=list.id %>/<%= comment.id%> method="POST">
@@ -75,17 +97,13 @@ ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.u
 	<% end %>
 댓글쓰기 
 <form action=create_reply/<%=list.id%> method="POST">
-<input type="hidden" value="45qF-skE2m88LpMB94Z1IQ" name="u_token">
+<input type="hidden" value="e9pLzs7bg1HyDNB-YchhcQ" name="u_token">
 <input type="string" name="content">
 <input type="submit" value="댓글쓰기">
 </form>
 <% end%> <br>
 <% else %>
 <% end %>
-<hr>
-<% @univ.each do |univ| %>
-<%= univ.id %>: <%= univ.univ_name %><br>
-<% end %> <br>
 <hr>
 이미지 목록<br> 
 <% @img.each do |img| %>
@@ -100,21 +118,20 @@ drawing 리스트
 <hr>
 게시글 글쓰기 예시!! a.k.a create_post
 <form action="create_post" method="post" enctype="multipart/form-data">
-<input type="hidden" name="u_token" value="45qF-skE2m88LpMB94Z1IQ">
+<input type="hidden" name="u_token" value="e9pLzs7bg1HyDNB-YchhcQ">
 그녀를 본 학교 : <input type="string" name="univ_name"><br>
 메모 :  <input type="string" name="talk_to"><br>
 이미지:<input type="file" name="image_file"><br>
 <input type="submit" value="아!">
-
+</form>
 <hr>
+
 <form action="signup" method="post" >
   email: <input type="string" name="email"><br>
   password: <input type="password" name="password"></br>
-	passwordre: <input type="password" name="password_re"><br>
 	name: <input type="string" name="name"></br>
-  datetime: <input type="datetime" name="datetime"></br>
   
-  <input type="submit" value="Submit">
+  <input type="submit" value="회원가입">
 	
 </form>
 
@@ -124,6 +141,10 @@ drawing 리스트
 	
 	<input type="submit" value="submit">
 </form>
+<% @univ.each do |univ| %>
+<%= univ.id %>: <%= univ.univ_name %><br>
+<% end %> <br>
+<hr>
 
 <script>
 </script>

@@ -7,7 +7,9 @@ class WantedBoard < ActiveRecord::Base
     belongs_to :univ_category, :class_name => 'UnivCategory', :foreign_key => :univ_id
     has_many :wanted_comments, :class_name => 'WantedComment'
 		
+		has_one :pay_log, :class_name => 'PayLog'	
 		has_one :draw_pool, :class_name => 'DrawPool'
+
 		
 
 end

@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
     has_many :wanted_boards, :class_name => 'WantedBoard'
     has_many :wanted_comments, :class_name => 'WantedComment'
     has_many :withdraws, :class_name => 'Withdraw'
+		has_many :pay_log, :class_name => 'PayLog'
  
 		has_one :token, :class_name => 'Token'
 		

@@ -3,8 +3,30 @@
   margin-right: 0px;
 }
 
+form input[type=text] { width: 100%;  }
 
-body{
-color: red;
+.desc{
+	color: #585858;
+}
+.buttonHolder{
+	text-align: center;
+}
+.bangood{
+	text-align: center;
+	margin: 50px 0 50px 0;
 }
 
+.check_button{
+
+	 background-color: #444444;
+    border: none;
+    color: white;
+    padding: 15px  32px ;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    /*margin: 4px 2px;*/
+    cursor: pointer;
+		width: 320px;
+}

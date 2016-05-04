@@ -15,6 +15,7 @@ require 'digest/sha1'
 	@fb_user = FacebookUser.all
 	@draw = DrawPool.all
 	@paylog = PayLog.all
+	@item_list = RewardItem.all
   end
   
   def signup
@@ -39,32 +40,34 @@ require 'digest/sha1'
     
     respond_to do |format|
     	format.json {render json: @check }
+			format.html {render html: @check }
     end
   end
 
   def signin
     @check = Hash.new
-    @user = User.where(email: params[:email], password: Digest::MD5.hexdigest(params[:password]) ).take
+    user = User.where(email: params[:email], password: Digest::MD5.hexdigest(params[:password]) ).take
     
-    unless @user.nil?
+    unless user.nil?
 			
-      @mytoken = Token.new
-			@mytoken.utoken = loop do
+      mytoken = Token.new
+			mytoken.utoken = loop do
       random_token = SecureRandom.urlsafe_base64(nil, false)
       break random_token unless Token.exists?(utoken: random_token)
     	end	
 		#	@a.utoken = SecureRandom.hex(3)
-			@mytoken.user_id = @user.id
-      @mytoken.save
-			@user.user_token = @mytoken.utoken
-			@user.save
-      @check={"success":true,"comment":"로그인에 성공하였습니다","token":@mytoken.utoken}
+			mytoken.user_id = user.id
+      mytoken.save
+			user.user_token = mytoken.utoken
+			user.save
+      @check={"success":true,"comment":"로그인에 성공하였습니다","token":mytoken.utoken}
     else
       @check = {"success":false,"comment":"로그인에 실패하였습니다. 다시 시도해주세요"}
     end
     
     respond_to do |format|
         format.json { render json: @check }   
+				format.html { render html: @check }
       end
   end
 
@@ -159,9 +162,9 @@ require 'digest/sha1'
 		token = Token.where(utoken: params[:u_token]).take
 
 		unless token.nil?	
-    	@user = User.find(token.user_id)
-    		unless @user.nil?
-		 			@check = {"success":true,"token":@user.user_token,"user_name":@user.name,"user_id":@user.email}
+    	user = User.find(token.user_id)
+    		unless user.nil?
+		 			@check = {"success":true,"token":user.user_token,"user_name":user.name,"user_id":user.email}
     		else
 				end
 		else
@@ -177,13 +180,13 @@ require 'digest/sha1'
 		@check = {"success":false, "comment":"권한이 없습니다"}
 		token = Token.where(utoken: params[:u_token]).take
 		unless token.nil?
-			@user = User.find(token.user_id)
-    		unless @user.nil?
-						if User.where(name: params[:name] ).take.present? and params[:name] != @user.name
+			user = User.find(token.user_id)
+    		unless user.nil?
+						if User.where(name: params[:name] ).take.present? and params[:name] != user.name
 							@check = {"success":false,"comment":"이미 존재하는 이름입니다."}
 						else
-      				@user.name= params[:name]
-      				@user.save
+      				user.name= params[:name]
+      				user.save
       				@check = {"success":true, "comment":"이름이 변경되었습니다."}
 						end
     		else
@@ -231,12 +234,12 @@ require 'digest/sha1'
   def find_pw_user
     @check = Hash.new
     emailaddr = params[:email]
-    u = User.where(email: emailaddr).take
+    user = User.where(email: emailaddr).take
     unless u.nil?
       @check = {"success":true, "comment":"변경된 비밀번호를 메일로 보냈습니다. 확인해주세요"}
       temp_password  = SecureRandom.hex(3)
-      u.password = Digest::MD5.hexdigest(temp_password)
-      u.save
+      user.password = Digest::MD5.hexdigest(temp_password)
+      user.save
       Pwmailer.findpw_mail(emailaddr,temp_password).deliver_now
     else
       @check={"success":false,"comment":"등록된 이메일이 없습니다. 다시 확인해주세요!"}
@@ -260,13 +263,22 @@ require 'digest/sha1'
   end
   
   def terms_write #이용약관 만들기
-    @newTerm = Term.new
-    @newTerm.term_code = params[:term_code]
-    @newTerm.term_content = params[:term_content]
-    @newTerm.save
+    newTerm = Term.new
+    newTerm.term_code = params[:term_code]
+    newTerm.term_content = params[:term_content]
+    newTerm.save
     
     redirect_to '/'
   end
+	def univ_list
+
+			univ = UnivCategory.select(:id, :univ_code, :univ_name)
+			respond_to do |format|
+				format.json {render json: univ}
+				format.html {render html: univ}
+			end
+	
+	end
   
   def post_list #현상수배 리스트
 
@@ -348,56 +360,114 @@ require 'digest/sha1'
   def create_post #현상수배 글쓰기
 		token = Token.where(utoken: params[:u_token]).take
 		univ = UnivCategory.where(univ_name: params[:univ_name]).take
+		pay_log = PayLog.where(pay_key: params[:pay_key]).take
+
     @check = Hash.new
    	@check = {"success":false} 
+
    	unless token.nil? 
 			user = User.find(token.user_id)
 				unless user.nil?
 	   	 		newpost = WantedBoard.new
-					unless univ.nil?
-    				newpost.univ_id = univ.id
-					else
-					end
-					# 몽타주 크로키  저장  
-					myimages = DrawPool.new
-					myimages.path = params[:image_file]
-					myimages.save!
-					# 그 외 정보 
-    			newpost.witness_date = params[:witness_date]
-   				newpost.is_place_maps = params[:is_place_maps]
-					newpost.lat = params[:lat]
-					newpost.lon = params[:lon]
-    			newpost.target_gen = params[:target_gen]
-    			newpost.talk_to = params[:talk_to]
-    			newpost.reward = params[:reward]
-    			newpost.user_id = user.id 
-					
-					
-				#	newpost.draw_img = myimages.path.url
-    			newpost.save
-		
-					if newpost
+								unless univ.nil?
+    							newpost.univ_id = univ.id
+								else
+								end
+
+					if ( (pay_log.nil?) and (params[:reward]=='0')) 
+											
+						# 몽타주 크로키  저장  
+						myimages = DrawPool.new
+						myimages.path = params[:image_file]
+						myimages.save!
+						# 그 외 정보 
+    				newpost.witness_date = params[:witness_date]
+   					newpost.is_place_maps = params[:is_place_maps]
+						newpost.lat = params[:lat]
+						newpost.lon = params[:lon]
+    				newpost.target_gen = params[:target_gen]
+    				newpost.talk_to = params[:talk_to]
+    				newpost.user_id = user.id 
+						newpost.reward = "없음"
+						#	newpost.draw_img = myimages.path.url
+    				newpost.save
 						
-						myimages.post_id = newpost.id
-						myimages.save
-						newpost.draw_img = myimages.path.url
-						newpost.save!
-					else
+						unless newpost.new_record?
+							myimages.post_id = newpost.id
+						  myimages.save
+							newpost.draw_img = myimages.path.url
+							newpost.save!
+
+     					@check = {"success":true, "comment":"good! 글이 성공적으로 게시되었습니다.","크로키url": myimages.path.url}   				 
+						else
+      				@check = {"success":false, "comment":"Error2, 다시 시도해주세요"}
+						end
+
+					elsif pay_log.nil? 
+							@check = {"success":false, "comment":"Error6, 선택한 결제내역이 없습니다."}
+					elsif ( pay_log.pay_status == 'success' )
+						# 몽타주 크로키  저장  
+						item = RewardItem.find(pay_log.item_id)
+						myimages = DrawPool.new
+						myimages.path = params[:image_file]
+						myimages.save!
+						# 그 외 정보 
+    				newpost.witness_date = params[:witness_date]
+   					newpost.is_place_maps = params[:is_place_maps]
+						newpost.lat = params[:lat]
+						newpost.lon = params[:lon]
+    				newpost.target_gen = params[:target_gen]
+    				newpost.talk_to = params[:talk_to]
+    				newpost.user_id = user.id 
+						newpost.reward = item.name
+						#	newpost.draw_img = myimages.path.url
+    				newpost.save
+						
+						unless newpost.new_record?
+							myimages.post_id = newpost.id
+							pay_log.post_id = newpost.id
+						  myimages.save
+							newpost.draw_img = myimages.path.url
+							newpost.save!
+
+     					@check = {"success":true, "comment":"good! 글이 성공적으로 게시되었습니다.","크로키url": myimages.path.url}   				 
+						else
+      				@check = {"success":false, "comment":"Error2, 다시 시도해주세요"}
+						end
+
+
+					else # pay_log는 있으나, progress 혹은 cancel 된 경우
+							@check = {"success":false, "comment":"Error7, 결제가 완료되지 않았습니다."}
 					end
-   					if newpost.new_record?
-      				@check = {"success":false, "comment":"Error. 다시 시도해주세요."}
-						else 
-      				@check = {"success":true, "comment":"good! 글이 성공적으로 게시되었습니다.","크로키url": myimages.path.url}
-   				  end
+						
 				else
+					@check = {"success":false, "comment":"Error3, 로그인후 시도해주세요."}
 				end
 		else
+			@check = {"success":false, "comment":"Error4, 로그인후 시도해주세요."}
 		end
     respond_to do |format|
         format.json {render json: @check }
 				format.html {render html: @check }
       end
   end
+
+	def pay_result
+			
+		pay_log = PayLog.where(pay_key: params[:pay_key]).take
+		unless pay_log.nil?
+			pay_log.imp = params[:imp_uid]
+			if params[:imp_success] == "true"
+				pay_log.pay_status = "success"
+				pay_log.save
+			else
+				pay_log.pay_status = "cancel"
+				pay_log.save
+			end
+		else
+		end
+
+	end
   
   def edit_post #현상수배 수정하기
 		token = Token.where(utoken: params[:u_token]).take
@@ -408,10 +478,12 @@ require 'digest/sha1'
     	user = User.find(token.user_id)
    		edit = WantedBoard.find(params[:wanted_board_id])
 			
-     	if edit.user_id == user.id ######################################################가능 ?.?
+     	if edit.user_id == user.id 
          	 edit.witness_date = params[:witness_date]
      	  	 edit.is_place_maps = params[:is_place_maps]
            edit.target_gen = params[:target_gen]
+					 edit.lat = params[:lat]
+					 edit.lon = params[:lon]
            edit.talk_to = params[:talk_to]
            edit.reward = params[:reward]
            edit.save
@@ -435,7 +507,7 @@ require 'digest/sha1'
 				user = User.find(token.user_id)
    			delete = WantedBoard.find(params[:wanted_board_id]) 
     
-   			if delete.user_id == user.id #########################################################가능?.?
+   			if delete.user_id == user.id 
       			delete.destroy
 					check = {"success":"success","comment":"글이 삭제 되었습니다."}
     		end
@@ -468,20 +540,53 @@ require 'digest/sha1'
 			end
 
   end
+
+
+	def pay
+		token = Token.where(utoken: params[:u_token]).take
+		user = User.find(token.user_id)
+		item = RewardItem.where(item_code: params[:item_code]).take
+		if token.nil? 
+			@f = 0
+		else
+			@f = user.id
+		end	
+		@a = item.name
+		@b = item.price
+		@c = params[:pay_key]
+		@d = item.id
+		
+	end
   
-  def pay  #결재하기
+  def pay_params  #결재하기
 		
-		@a = params[:item_name];
-		@b = params[:item_amount];
-		
+    params.require(:pay).permit(:pay_key,:pay_status,:item_id,:user_id,:imp, :merchant, :memo, :tel)
+
   end
+
+	def pay_refund
+		pay = PayLog.find(params[:id])
+		pay.pay_status = "request_refund"
+		pay.save
+		redirect_to '/'
+	end
+
+	def admin_refund
+		pay = PayLog.find(params[:id])
+		pay.pay_status= "refund_success"
+		pay.save
+		redirect_to '/'
+	end
 	
 	def pay_log
-		pay_log = PayLog.new
-		pay_log.imp = params[:imp_uid]
-		pay_log.merchant = params[:merchant_uid]
-		pay_log.save	
-		
+		pay_log = PayLog.where(pay_key: params[:pay_key]).take
+		if pay_log.nil?
+			pay_log = PayLog.new(pay_params)
+			pay_log.save	
+		else
+		pay_log.pay_status = params[:pay_status]
+		pay_log.save
+		end
 		redirect_to '/'
 	end
   
@@ -494,6 +599,7 @@ require 'digest/sha1'
       end
   
   end
+
   
   def create_reply #댓글쓰기
 		token = Token.where(utoken: params[:u_token]).take
@@ -595,6 +701,26 @@ require 'digest/sha1'
 		end
     
   end
+
+	def pay_list
+		@check = Hash.new	
+		token = Token.where(utoken: params[:u_token]).take
+		if token.nil?	
+			@check = {"success":false, "comment":"로그인 해주세요."}
+			respond_to do |format|
+				format.json {render json: @check }
+				end
+		else
+			pay_log = PayLog.where(user_id: token.user_id).order('id DESC').paginate(:page => params[:page], :per_page => 10)
+			if pay_log.nil?
+					pay_log = "결제 내역이 없습니다"
+			else
+			end
+			respond_to do |format|
+				format.json {render json: pay_log }
+				end
+		end
+	end
   
   def notice #공지사항
 		notice = Notice.order('created_at DESC').paginate(:page => params[:page], :per_page => 10)
@@ -602,9 +728,25 @@ require 'digest/sha1'
 		respond_to do |format|
 			format.json {render json: notice}
 		end
-
-		
   end
+	
+	def item_list
+		item = RewardItem.all
+			respond_to do |format|
+				format.json {render json: item }
+				format.html {render html: html }
+			end
+	end
+
+	def create_notice
+		notice = Notice.new
+		notice.title  = params[:title]
+		notice.content = params[:content]
+		notice.save
+		redirect_to '/'
+	end
+
+	def 
 
   def versions # 방긋 버전보기 
 		@version = AppVersion.last(1)
@@ -656,6 +798,8 @@ require 'digest/sha1'
   
   def tw_share
   end
+
+
   
   
 end

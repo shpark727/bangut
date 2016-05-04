@@ -13,3 +13,21 @@
  *= require_tree .
  *= require_self
  */
+
+@font-face {
+    font-family: 'NanumBarunGothic';
+    src: url('/assets/nanumbarungothic.eot?#iefix') format('embedded-opentype'),
+         url('/assets/nanumbarungothic.woff') format('woff'),
+         url('/assets/nanumbarungothic.ttf') format('truetype'),
+         url('/assets/nanumbarungothic.svg') format('svg');
+}
+
+@font-face {
+    font-family: 'montserrat-regular';
+    src: url('/assets/montserrat-regular.eot?#iefix') format('embedded-opentype'),
+         url('/assets/montserrat-regular.woff') format('woff'),
+         url('/assets/montserrat-regular.ttf') format('truetype'),
+         url('/assets/montserrat-regular.svg') format('svg');
+}
+
+	

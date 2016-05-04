@@ -114,8 +114,15 @@ class CreateSchema < ActiveRecord::Migration
   end
 
 	create_table "pay_log", force: :cascade do |t|
+		t.string "pay_key", limit: 64
+		t.integer "user_id", limit: 4
+		t.integer "post_id", limit: 4
+		t.integer "item_id", limit: 255
 		t.string "imp", limit: 255
 		t.string "merchant", limit: 255
+		t.string "memo", 		limit: 255
+		t.string "pay_status",	limit: 255
+		t.string "tel", 		limit: 63
 		t.timestamps
 	end
 
@@ -126,7 +133,14 @@ class CreateSchema < ActiveRecord::Migration
 	end
 
   create_table "univ_category", force: :cascade do |t|
-    t.string "univ_name", limit: 45
+		t.string "univ_code", limit: 25
+    t.string "univ_name", limit: 255
+		t.string "univ_area", limit: 255
+		t.string "univ_zip", limit: 63
+		t.text "univ_addr", limit: 65536
+		t.integer "student_total", limit: 4
+		t.integer "student_now", limit: 4
+		t.integer "student_leave", limit: 4
   end
 
   create_table "user", force: :cascade do |t|
@@ -145,7 +159,6 @@ class CreateSchema < ActiveRecord::Migration
 		t.integer		"item_code",		limit: 8
 		t.string		"name",					limit: 255
 		t.integer 	"price",				limit: 16
-		t.timestamps null: false
 	end
 
   create_table "wanted_board", force: :cascade do |t|
@@ -155,7 +168,7 @@ class CreateSchema < ActiveRecord::Migration
     t.string   "witness_place",  limit: 255
     t.string   "target_gen",     limit: 1
     t.text     "talk_to",        limit: 16777215
-    t.integer  "reward",         limit: 4
+    t.string  "reward",         limit: 16
     t.integer  "user_id",        limit: 4
     t.integer  "count_share",    limit: 4,        default: 0
 		t.string  "draw_img", 			 limit: 255

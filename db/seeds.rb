@@ -19,8 +19,8 @@
 
 	PayTerm.create( [ term_code: '1.0', term_content: 'this is pay_term vision1.0'] )
 
-	UnivCategory.create( [univ_name: 'ajou']) 
-	UnivCategory.create( [univ_name: 'korea'])
-	UnivCategory.create( [univ_name: 'seoul'])
+	UnivCategory.create( [univ_name: '아주대학교']) 
+	UnivCategory.create( [univ_name: '고려대학교'])
+	UnivCategory.create( [univ_name: '서울대학교'])
 
 

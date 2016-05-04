@@ -1,16 +1,20 @@
 <link rel="stylesheet" type="text/css" href="/assets/pay.css">
 <script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment-1.1.1.js"></script>
 
-<section style="background-color:#F5F5DC">
 
-<h2 style="text-align:center">결제</h2>
+<section style="background-color:#f7eed1">
 
-<div class="container-fluid" style="padding: 50px 0 50px 0;"> 
-
+<% if @f == 0 %>
+	Error. 올바르지 않은 경로입니다.
+<% else %>
+<div class="container-fluid" style="padding: 0 0 50px 0;"> 
+<div class="bangood">
+<%= image_tag "bangood_logo_144.png" %>
+</div>
 <div id="TEST" >
 	<form name="form_payment" id="form_payment" class="form_horizontal">
 		<div class="form-group row">
-			<label for="pg_provider" class="col-md-3 col-xs-3 form-control-label">지원 PG사</label>
+			<label for="pg_provider" class="col-md-3 col-xs-3 form-control-label desc">지원 PG사</label>
 			<div class="col-md-9 col-xs-9">
 				<select name="pg_provider" id="pg-provider" class="form-control">
 <!--				<option value="danal" data-option="phone">다날-휴대폰소액결제전용</option>-->
@@ -20,7 +24,7 @@
 		</div> 
 
 		<div class="form-group row">
-			<label for="pay_method" class="col-md-3 col-xs-3 form-control-label">결제수단</label>
+			<label for="pay_method" class="col-md-3 col-xs-3 form-control-label desc">결제수단</label>
 			<div class="col-md-9 col-xs-9">
 				<select name="pay_method" id="pay_method" class="form-control">
 				<option value="phone">휴대폰소액결제</option>
@@ -29,44 +33,44 @@
 		</div>
 	
 		<div class="form-group row ">
-			<label for="merchant_uid" class="col-md-3 col-xs-3 form-control-label">주문번호</label>
+			<label for="merchant_uid" class="col-md-3 col-xs-3 form-control-label desc">주문번호</label>
 			<div class="col-md-9 col-xs-9">
-				<input type="text" name="merchant_uid" id="merchant_uid" value class="form-control" disabled>
+				<input type="text" name="merchant_uid" id="merchant_uid" class="form-control" disabled>
 			</div>
 		</div>
 
 	<div class="form-group row">
-			<label for="name" class="col-md-3 col-xs-3 form-control-label">상품명</label>
+			<label for="name" class="col-md-3 col-xs-3 form-control-label desc">상품명</label>
 			<div class="col-md-9 col-xs-9">
 				<input type="text" name="name" id="name" value="<%= @a %>" class="form-control" disabled>
 			</div>
 	</div>
 	<div class="form-group row">
-			<label for="amount" class="col-md-3 col-xs-3 form-control-label">결재금액</label>
+			<label for="amount" class="col-md-3 col-xs-3 form-control-label desc">결제금액</label>
 			<div class="col-md-9 col-xs-9">
-				<input type="tel" name="amount" id="amount" value="<%=@b %>" class="form-control" disabled>
+				<input type="text" name="amount" id="amount" value="<%=@b %>" class="form-control" disabled>
 			</div>
 	</div>
 	<div class="form-group row">
-			<label for="buyer_email" class="col-md-3 col-xs-3 form-control-label">이메일주소</label>
+			<label for="buyer_email" class="col-md-3 col-xs-3 form-control-label desc">이메일주소</label>
 			<div class="col-md-9 col-xs-9">
 				<input type="text" name="buyer_email" id="buyer_email"  class="form-control">
 			</div>
 	</div>
 	<div class="form-group row">
-			<label for="buyer_name" class="col-md-3 col-xs-3 form-control-label">성함</label>
+			<label for="buyer_name" class="col-md-3 col-xs-3 form-control-label desc">성함</label>
 			<div class="col-md-9 col-xs-9">
 				<input type="text" name="buyer_name" id="buyer_name"  class="form-control">
 			</div>
 	</div>
 	<div class="form-group row">
-			<label for="buyer_tel" class="col-md-3 col-xs-3 form-control-label">전화번호</label>
+			<label for="buyer_tel" class="col-md-3 col-xs-3 form-control-label desc">전화번호</label>
 			<div class="col-md-9 col-xs-9">
 				<input type="text" name="buyer_tel" id="buyer_tel" class="form-control">
 			</div>
 	</div>
 	<div class="form-group row">
-			<label for="buyer_memo" class="col-md-3 col-xs-3 form-control-label">메모</label>
+			<label for="buyer_memo" class="col-md-3 col-xs-3 form-control-label desc">메모</label>
 			<div class="col-md-9 col-xs-9">
 				<input type="text" name="buyer_memo" id="buyer_memo" placeholder="판매자에게 남기실 메모를 입력해주세요"  class="form-control">
 			</div>
@@ -75,12 +79,9 @@
 </form>
 
 	<div id="responser" style="text-align:center;"><br></div>
-	<div class="row">
-		<div class="col-md-4 col-xs-4"></div>
-		<div class="col-md-4 col-xs-4">
-		<a id="requester" class="btn btn-primary">결제하기</a>
-		</div>
-		<div class="col-md-4 col-xs-4"></div>
+
+	<div class="buttonHolder">
+		<a id="requester" class="check_button">결제하기</a>
 	</div>
 
 </div> <!--end of TEST div -->
@@ -102,7 +103,16 @@ function callback() {
 
             // 지원 pg사 추가 될 때마다 추가 바람.
 						IMP.init('imp20065337');
-            
+						// pay_log table에 결제정보를 입력 && status 는 결제중 
+						$.ajax({
+ 			     	type:'post',
+ 						url: 'paylog',
+						dataType : 'string',
+						contentType: 'application/json',
+ 						data : JSON.stringify( { pay: { pay_key : "<%= @c %>", pay_status:'progress', item_id: '<%= @d %>', user_id:'<%= @f%>',imp : IMP, merchant : frm.merchant_uid.value, memo : frm.buyer_memo.value, tel : frm.buyer_tel.value } }),
+
+						success: function(json) { }
+ 						});
 
             IMP.request_pay({
                 pay_method : frm.pay_method.value,
@@ -115,25 +125,47 @@ function callback() {
                 buyer_tel:frm.buyer_tel.value, 
 								buyer_memo:frm.buyer_memo.value,
                 //vbank_due:frm.vbank_due.value,
-                app_scheme:'iamporttest'
-            }, function(rsp) {
+                app_scheme:'iamporttest',
+								m_redirect_url:'http://52.79.95.135/pay_result?pay_key=<%= @c %>' 
+            	}, 
+
+						function(rsp) {
                 if ( rsp.success ) {
                     var msg = '결제가 완료되었습니다.<br>';
                     msg += '고유ID : ' + rsp.imp_uid + '<br>';
                     msg += '상점 거래ID : ' + rsp.merchant_uid + '<br>';
                     msg += '결제 금액 : ' + rsp.paid_amount + '<br>';
+										$.ajax({
+											type: 'post',
+											url: 'paylog',
+											data: { pay_key : "<%= @c%>", pay_status : "success" },
+											success: function(data) {}
+										});
+
+
 
                     if ( rsp.pay_method === 'card' ) {
                         msg += '카드 승인번호 : ' + rsp.apply_num + '<br>';
-                    } else if ( rsp.pay_method === 'vbank' ) {
+                	    } 
+										else if ( rsp.pay_method === 'vbank' ) {
                         msg += '가상계좌 번호 : ' + rsp.vbank_num + '<br>';
                         msg += '가상계좌 은행 : ' + rsp.vbank_name + '<br>';
                         msg += '가상계좌 예금주 : ' + rsp.vbank_holder + '<br>';
                         msg += '가상계좌 입금기한 : ' + rsp.vbank_date + '<br>';
-                    }
-                } else {
+                    	}
+                } 
+						
+								else { //rsp 실패경우
                     var msg = '결제에 실패하였습니다.' + '<br>';
                     msg += '에러내용 : ' + rsp.error_msg + '<br>';
+
+										$.ajax({
+											type: 'post',
+											url: 'paylog',
+											data: { pay_key : "<%= @c%>", pay_status : "cancel" },
+											success: function(data) {}
+										});
+
                 }
 
                 $('#responser').html(msg).show();
@@ -216,4 +248,4 @@ if ( script.readyState ) { //IE
 script.src = "https://service.iamport.kr/js/iamport.payment-1.1.1.js";
 document.getElementsByTagName('head')[0].appendChild(script);
 </script>
-
+<%end%>
