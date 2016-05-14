@@ -544,18 +544,26 @@ require 'digest/sha1'
 
 	def pay
 		token = Token.where(utoken: params[:u_token]).take
-		user = User.find(token.user_id)
-		item = RewardItem.where(item_code: params[:item_code]).take
-		if token.nil? 
-			@f = 0
+		unless token.nil?
+			user = User.find(token.user_id)
+			item = RewardItem.where(item_code: params[:item_code]).take
+			if token.nil? 
+				@f = 0
+			else
+				@f = user.id
+			end	
+			@a = item.name
+			@b = item.price
+			@c = params[:pay_key]
+			@d = item.id
 		else
-			@f = user.id
-		end	
-		@a = item.name
-		@b = item.price
-		@c = params[:pay_key]
-		@d = item.id
-		
+			@check = Hash.new
+			@check = "로그인 해주세요."
+			respond_to do |format|
+					format.json {render json: @check}
+					format.html {render html: @check}
+					end
+		end
 	end
   
   def pay_params  #결재하기
@@ -711,7 +719,8 @@ require 'digest/sha1'
 				format.json {render json: @check }
 				end
 		else
-			pay_log = PayLog.where(user_id: token.user_id).order('id DESC').paginate(:page => params[:page], :per_page => 10)
+			pay_log = PayLog.joins(:reward_item).select("pay_log.*, reward_item.name, reward_item.price").where(:user_id => token.user_id).order('id DESC').paginate(:page => params[:page], :per_page => 5)
+	
 			if pay_log.nil?
 					pay_log = "결제 내역이 없습니다"
 			else
@@ -798,6 +807,17 @@ require 'digest/sha1'
   
   def tw_share
   end
+	
+	def privacy_term
+	last_term = PrivacyTerm.order("created_at").last
+
+ 
+    respond_to do |format|
+				format.json {render json:	last_term}
+				format.html {render html: last_term}
+      end
+
+	end
 
 
   

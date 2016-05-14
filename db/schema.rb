@@ -99,6 +99,13 @@ ActiveRecord::Schema.define(version: 20160414090404) do
     t.datetime "updated_at"
   end
 
+  create_table "privacy_term", force: :cascade do |t|
+    t.string   "term_code",    limit: 8
+    t.text     "term_content", limit: 4294967295
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "push_configurations", force: :cascade do |t|
     t.string   "type",        limit: 255,                   null: false
     t.string   "app",         limit: 255,                   null: false
@@ -246,6 +253,6 @@ ActiveRecord::Schema.define(version: 20160414090404) do
   add_foreign_key "wanted_board", "user", name: "001"
   add_foreign_key "wanted_comment", "user", name: "002"
   add_foreign_key "wanted_comment", "wanted_board", name: "003"
-  add_foreign_key "withdraw", "banks", name: "010"
+  add_foreign_key "withdraw", "banks", name: "090"
   add_foreign_key "withdraw", "user", name: "008"
 end

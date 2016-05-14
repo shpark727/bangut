@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 	post 'pay_list' => 'home#pay_list'
 
 	get 'pay_result' => 'home#pay_result'
+	get 'privacy_term' => 'home#privacy_term'
 
 
 

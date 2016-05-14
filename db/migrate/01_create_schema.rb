@@ -112,6 +112,12 @@ class CreateSchema < ActiveRecord::Migration
     t.text "term_content", limit: 4294967295
 		t.timestamps
   end
+	
+	create_table "privacy_term", force: :cascade do |t|
+		t.string "term_code", limit: 8
+		t.text		"term_content", limit: 4294967295
+		t.timestamps
+	end
 
 	create_table "pay_log", force: :cascade do |t|
 		t.string "pay_key", limit: 64
@@ -211,7 +217,7 @@ class CreateSchema < ActiveRecord::Migration
   add_foreign_key "wanted_board", "user", name: "001"
   add_foreign_key "wanted_comment", "user", name: "002"
   add_foreign_key "wanted_comment", "wanted_board", column: "wanted_board_id", name: "003"
-  add_foreign_key "withdraw", "banks", name: "010"
+  add_foreign_key "withdraw", "banks", name: "090"
   add_foreign_key "withdraw", "user", name: "008"    
         
     end
