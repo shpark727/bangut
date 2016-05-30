@@ -2,6 +2,24 @@ class HomeController < ApplicationController
 
 require 'digest/md5'
 require 'digest/sha1'
+require 'houston'
+
+	def test
+	@d = User.all
+	@b= FacebookUser.all
+	@c = Token.all
+	@term = Term.all	
+	@pay_term = PayTerm.all
+	@list = WantedBoard.all	
+	@univ = UnivCategory.all
+	@img = ImagePool.all	
+	@fb_user = FacebookUser.all
+	@draw = DrawPool.all
+	@paylog = PayLog.all
+	@item_list = RewardItem.all
+
+			
+	end
 
   def index
 	@d = User.all
@@ -61,6 +79,13 @@ require 'digest/sha1'
 			user.user_token = mytoken.utoken
 			user.save
       @check={"success":true,"comment":"로그인에 성공하였습니다","token":mytoken.utoken}
+			if Device.exists?(user_id: user.id)	
+				editDevice = Device.where(user_id: user.id).take
+				editDevice.uuid = params[:uuid]
+				editDevice.save
+			else
+				Device.create(user_id: user.id , uuid: params[:uuid] )
+			end
     else
       @check = {"success":false,"comment":"로그인에 실패하였습니다. 다시 시도해주세요"}
     end
@@ -126,7 +151,7 @@ require 'digest/sha1'
 									user.user_token = mytoken.utoken
 									user.save
 								@check = {"success":true,"comment":"로그인에 성공하였습니다.","token":user.user_token,"fb_token":user.facebook_token}
-							
+								
 						end # 
 			end # end unless 
 	   
@@ -450,6 +475,7 @@ require 'digest/sha1'
         format.json {render json: @check }
 				format.html {render html: @check }
       end
+		
   end
 
 	def pay_result
@@ -531,6 +557,12 @@ require 'digest/sha1'
 					post.choosed_id = params[:wanted_reply]
 					post.save
 					@check = {"success":true, "comment":"답변을 채택하였습니다."}
+					#push alarm
+					comment_user_id = WantedComment.select(:user_id).where(id: params[:wanted_reply])
+					comment_content = WantedComment.select(:content).where(id: params[:wanted_reply])
+					comment_device = Device.where(user_id: comment_user_id).take
+					comment_token = comment_device.uuid
+					alarm_push_select(comment_token, comment_content)
 			else
 			end
 		end
@@ -623,6 +655,15 @@ require 'digest/sha1'
 			reply.content = params[:content]
 			reply.save		
    		@check = {"success":true, "comment":"댓글이 작성되었습니다."}
+			#push alarm
+			post_id = params[:wanted_board_id]
+			post_user_id = WantedBoard.select(:user_id).where(id: post_id)
+			post_content = WantedBoard.select(:talk_to).where(id: post_id)	
+			post_device = Device.where(user_id: post_user_id).take
+			post_token = post_device.uuid
+			alarm_push_comment(post_device , post_content) 
+				
+			
     end
 			respond_to do |format|
 				format.json {render json: @check}
@@ -673,7 +714,12 @@ require 'digest/sha1'
   
   def mypage_post #내가쓴 글리스트 
 		token = Token.where(utoken: params[:u_token]).take
+		check= Hash.new
+		check ={"success":false, "comment":"로그인 해주세요"}
 		if token.nil?
+			respond_to do |format|
+				format.json {render json: check}
+			end
 		else
 			user = User.find(token.user_id)
 			mypost = WantedBoard.joins(:user, :univ_category).select("wanted_board.*, user.name , univ_category.univ_name").where(:user_id => user.id).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)	
@@ -682,6 +728,7 @@ require 'digest/sha1'
 
     respond_to do |format|
         format.json {render json: mypost }
+				format.html {render html: mypost }
       end
 		end
     
@@ -705,6 +752,7 @@ require 'digest/sha1'
 	
 	 		respond_to do |format|
  		     format.json {render json: mycomment }
+				format.html {render html: mycomment }
  		   end
 		end
     
@@ -794,8 +842,36 @@ require 'digest/sha1'
   
   def alarm_list #알람리스트
   end
+	
+	def alarm_push_comment(device_token , post_content) # 내글에 댓글이 달리면 푸시
+
+		apn = Houston::Client.development
+		apn.certificate = File.read("apnsdev.pem")		
+		token = device_token 
+		
+
+		notification = Houston::Notification.new(device: token)
+		notification.alert ="내 글에 댓글이 작성되었습니다."
+		notification.custom_data={post_content: post_content}
+		notification.badge = 1
+    notification.sound = "sosumi.aiff"
+    notification.content_available = true
+
+		apn.push(notification)
+		
+	end
   
-  def alarm_push #알람 켜고끄기
+  def alarm_push_select(device_token, comment_content) # 내 댓글이 채택되면 푸시
+		apn = Houston::Client.development
+		apn.certificate = File.read("apnsdev.pem")
+		token = device_token
+
+		notification = Houston::Notification.new(device: token)
+		notification.alert="나의 댓글이 채택되었습니다."
+		notification.badge = 1
+		notification.custom_data={comment_content: comment_content}
+		notification.content_available = true
+		apn.push(notification)
   end
   
   def fb_share 

@@ -219,6 +219,7 @@ class CreateSchema < ActiveRecord::Migration
   add_foreign_key "wanted_comment", "wanted_board", column: "wanted_board_id", name: "003"
   add_foreign_key "withdraw", "banks", name: "090"
   add_foreign_key "withdraw", "user", name: "008"    
+
         
     end
     

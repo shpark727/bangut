@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   get 'abcd' => 'home#abcd'
 	post 'abcd' => 'home#abcd'
 
+	get 'test' => 'home#test'
+	post 'test' => 'home#test'
+
 	post 'signup' => 'home#signup'
 	post 'signin' => 'home#signin'
   get 'signout' => 'home#signout'
@@ -27,8 +30,10 @@ Rails.application.routes.draw do
 	post 'create_reply/:wanted_board_id' => 'home#create_reply'
 	post 'edit_reply/:reply_id' => 'home#edit_reply'
 	post 'delete_reply/:reply_id' => 'home#delete_reply'
-	post 'mypage_post' => 'home#mypage_post'
-	post 'mypage_reply' => 'home#mypage_reply'
+	#post 'mypage_post' => 'home#mypage_post'
+	get 'mypage_post' => 'home#mypage_post'
+	#post 'mypage_reply' => 'home#mypage_reply'
+	get 'mypage_reply' => 'home#mypage_reply'
 	get 'notice' => 'home#notice'
 	get 'version' => 'home#versions'
 	post 'image_upload' => 'home#image_upload'
@@ -40,6 +45,7 @@ Rails.application.routes.draw do
 	post 'pay_refund' => 'home#pay_refund'
 	get 'item_list' => 'home#item_list'
 	post 'pay_list' => 'home#pay_list'
+	get 'pay_list' => 'home#pay_list'
 
 	get 'pay_result' => 'home#pay_result'
 	get 'privacy_term' => 'home#privacy_term'

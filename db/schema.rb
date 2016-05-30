@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160414090404) do
+ActiveRecord::Schema.define(version: 20160526120752) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -39,6 +39,15 @@ ActiveRecord::Schema.define(version: 20160414090404) do
     t.string  "bank_name", limit: 45
     t.integer "bank_code", limit: 4
   end
+
+  create_table "devices", force: :cascade do |t|
+    t.string   "uuid",       limit: 255
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "devices", ["user_id"], name: "index_devices_on_user_id", using: :btree
 
   create_table "draw_pool", force: :cascade do |t|
     t.string  "path",    limit: 64
@@ -157,6 +166,7 @@ ActiveRecord::Schema.define(version: 20160414090404) do
     t.integer "item_code", limit: 8
     t.string  "name",      limit: 255
     t.integer "price",     limit: 8
+    t.string  "image",     limit: 255
   end
 
   create_table "share_log", force: :cascade do |t|

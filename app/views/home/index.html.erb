@@ -1,200 +1,38 @@
-<h1>방금그사람, 방긋</h1>
-<form action="signin" method="post">
-	이메일 : <input type="string" name="email" ><br>
-	비밀번호 :<input type="password" name="password"><br>
-	<input type="submit" value="로그인"><br>
-</form>
-<script type="text/javascript" src="https://service.iamport.kr/js/iamport.payment.js"></script>
-
-
-<br> <br>
-아이템리스트<br>
-<% @item_list.each do |item| %>
-네임 : <%= item.name %><br>
-코드 : <%= item.item_code %><br>
-가격 : <%= item.price %><br>
-<br>
-<% end %>
-
-<hr>
----------- 결재 정보 ----------<br>
-<% @paylog.each do |pay| %>
-결재번호:<%= pay.id %> <br>
-결재키 : <%= pay.pay_key %><br>
-imp_uid: <%= pay.imp%><br>
-merchant_uid: <%= pay.merchant %><br>
-user:id: <%=pay.user_id%><br>
-post_id: <%=pay.post_id%><br>
-item_id: <%=pay.item_id%><br>
-memo: <%= pay.memo %><br>
-tel: <%=pay.tel%><br>
-status: <%= pay.pay_status %><br>
-시간: <%= pay.created_at %><br>
-<br>
-
-<% end %>
-
-<hr>
--------------------------결재창-----------------<br>
-hidden type / item_name && item_amount <br>
-<form action="pay" method="POST">
-	<input type="hidden" name="item_code" value="스타벅스 아메리카노(tall)">
-	<input type="hidden" name="pay_key" value="eeeee">
-	<input type="hidden" name="item_amount" value="4100">	
-	<input type="submit" value="스벅 아메리카노 결재하기">
-</form>
-<form action="pay" method="POST">
-	<input type="hidden" name="item_name" value="스타벅스 아이스 아메리카노(tall)">
-	<input type="hidden" name="item_amount" value="4100">
-	<input type="submit" value="스벅 아이스아메리카노 결재">
-</form>
-<hr>
--- 로그인정보-- 
-<hr> 
-<h3>페이스북유저</h3><br> 
-<% @fb_user.each do |fbuser| %>
-페북유저ID:<%= fbuser.id %> <br>
-name: <%= fbuser.name %> <br>
-email:  <%= fbuser.email %>  <br>
-oauth_token :  <%= fbuser.oauth_token %> <br>
-UID:<%=fbuser.uid%><br>
-provider : <%= fbuser.provider%><br>
- 만료 시간 :<%= fbuser.oauth_expires_at %><br> 
-
- <% end %>
-<hr>
-서버내 토큰 <br>
-<% @c.each do |token| %>
-토큰아이디:<%= token.id %>
-토큰값:<%= token.utoken %>
-User아이디:<%= token.user_id %><br>
-<% end %>
-<hr>
-현재 회원가입 유저:<br>
-<% @d.each do |user| %>
-ID:<%= user.id %> email:<%= user.email %> name:<%= user.name %> token:<%= user.user_token %> facebook_token:<%=user.facebook_token%><br>
-<% end %>
-<hr>
-이용약관 : <% @term.each do |term| %>
-<%= term.term_content %><br>
-<% end %><br>
-결재 이용약관 : <% @pay_term.each do |x| %>
-<%= x.term_code %>,<%= x.term_content %><br>
-<% end%><br>
-<hr>
-
-게시된 글 목록<br>
-<% unless @list.nil? %>
-<% @list.each do |list| %>
-글ID: <%= list.id%> 글쓴이:<%= list.user_id%> 드로잉:<%= list.draw_img %> 학교ID: <%= list.univ_id%> 성별: <%= list.target_gen %> reward:<%= list.reward %> 메모:<%= list.talk_to%> 몽타주:<%= list.draw_img %> 채택된댓글: <%= list.choosed_id %>  글쓴시간:<%= list.witness_date%><br>
-	<% list.wanted_comments.each do |comment| %>
-	&nbsp;&nbsp;[댓글<%= comment.id %>] 글쓴이ID : <%= comment.user_id %>  내용:<%= comment.content%> <%= comment.created_at%> &nbsp;&nbsp; 
-<form action=answer_post/<%=list.id %>/<%= comment.id%> method="POST">
-	<input type="hidden" name="u_token" value="45qF-skE2m88LpMB94Z1IQ">
-	<input type="submit" value="채택하기">
-</form>
-<br>
-	<% end %>
-댓글쓰기 
-<form action=create_reply/<%=list.id%> method="POST">
-<input type="hidden" value="e9pLzs7bg1HyDNB-YchhcQ" name="u_token">
-<input type="string" name="content">
-<input type="submit" value="댓글쓰기">
-</form>
-<% end%> <br>
-<% else %>
-<% end %>
-<hr>
-이미지 목록<br> 
-<% @img.each do |img| %>
-이미지아이디:<%= img.id%> 유저아이디:<%= img.user_id%>이미지 url: <%= img.path.url %><br>
-<% end %>
-
-<hr>
-drawing 리스트
-<% @draw.each do |draw| %>
-	크로키 아이디: <%= draw.id%> 게시글아이디:<%=draw.post_id %> 크로키 url: <%= draw.path.url %><br>
-<% end %>
-<hr>
-게시글 글쓰기 예시!! a.k.a create_post
-<form action="create_post" method="post" enctype="multipart/form-data">
-<input type="hidden" name="u_token" value="e9pLzs7bg1HyDNB-YchhcQ">
-그녀를 본 학교 : <input type="string" name="univ_name"><br>
-메모 :  <input type="string" name="talk_to"><br>
-이미지:<input type="file" name="image_file"><br>
-<input type="submit" value="아!">
-</form>
-<hr>
-
-<form action="signup" method="post" >
-  email: <input type="string" name="email"><br>
-  password: <input type="password" name="password"></br>
-	name: <input type="string" name="name"></br>
-  
-  <input type="submit" value="회원가입">
-	
-</form>
-
-<form action="image_upload" method="post" enctype="multipart/form-data">	
-	image: <input type="file" name="image_file"></br>
-	<input type="hidden" name="u_token" value="_mFKbmRwxEvMS-HqD5txMw">
-	
-	<input type="submit" value="submit">
-</form>
-<% @univ.each do |univ| %>
-<%= univ.id %>: <%= univ.univ_name %><br>
-<% end %> <br>
-<hr>
-
-<script>
-</script>
-<div>
-hello <%= link_to "sign in with facebook!!!!!!!!!", "/auth/facebook", id: "sign_in" %>
-</div>
-<!--
-  Below we include the Login Button social plugin. This button uses
-  the JavaScript SDK to present a graphical Login button that triggers
-  the FB.login() function when clicked.
--->
-
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
-
-<form action="logout" method="post">
-	<input type="hidden" value="IIaRqJUAoGRMqV5JJftGqw" name="u_token">
-	<input type="submit" value="로그아웃">
-</form>
-
-<div id="status">
-</div>
-
-<div
-  class="fb-like"
-  data-share="true"
-  data-width="450"
-  data-show-faces="true">
-</div>
-<br>
-로그인된 정보</br>
-
-페북로그인 정보<br>
-
-<% @b.each do |user| %>
-	프로바이더:<%= user.provider %> <br>
-	uid :<%= user.uid %> <br>
- name :<%= user.name %><br>
- token :<%= user.oauth_token %><br>
- expires :<%= user.oauth_expires_at %><br>
- email : <%= user.email %><br>
-<hr>
- <% end %>
+<div class="intro">
+	<div class="dim"></div>
+	<div class="header">
+		<div class="header_wrap">
+			<div class="float_wrap">
+				<ul>
+						<li><a href="https://www.facebook.com/%EB%B0%A9%EA%B8%88-%EA%B7%B8-%EC%82%AC%EB%9E%8C-%EB%B0%A9%EA%B8%8B-Bangood-258300577855631/timeline" rel="external">Facebook</a></li>
+						<li><a href="#" rel="external">Instagram</a></li>
+						<li><a href="mailto:Info@starinmedia.net" rel="external">Contact</a></li>
+						<li><a href="#aboutus">About</a></li>
+				</ul>
+			</div> <!-- end float_wrap> -->
+		</div> <!-- end header_wrap -->
+	</div> <!-- end header -->
 
 
 
-<hr>
-페북공유하기 
-<form action="fb_share" method="get">
- <input type="text" name="post_id">
-<input type="submit" value="ah">
-</form>
-<a href="fb_share">페북공유하기</a>
+
+	<div class="intro_main">
+		<div class="introduce">
+					<div class="bg_pic"></div>
+					<div class="desc_text"><p></p></div>
+					<div id=aboutus class="aboutus">
+							Team Bangood</br>
+			Oh simin /Park sunghwan /Koo Kyoseung /Park sungyoung<br>
+		<br><br><br><br><br>	
+					</div>
+					
+						
+		</div>
+	</div>
+
+
+	<div class="footer">
+			 방긋 사업자 등록번호 : 통신판매업신고번호 : 주소 : 이메일 : 
+	</div>
+
+</div> <!-- end intro -->

@@ -2,6 +2,11 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
 
+	#APN = Houston::Client.production
+	#APN.certificate = File.read("../../apnspro.pem")
+	#APN.passphrase = 'pem_file_password'
+
+
   config.action_mailer.delivery_method = :mailgun
   config.action_mailer.mailgun_settings = {
         api_key: 'key-a88827be311d1cba0d0214f2fa530eb7',

@@ -9,5 +9,6 @@ class User < ActiveRecord::Base
 		has_many :pay_log, :class_name => 'PayLog'
  
 		has_one :token, :class_name => 'Token'
+		has_one :device
 		
 end

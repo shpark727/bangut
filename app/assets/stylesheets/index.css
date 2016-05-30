@@ -1,0 +1,205 @@
+
+.intro{
+	width: 100%;
+	height:100%;
+	min-height: 1000px;
+	min-width: 800px;
+	margin: 0 auto;
+}
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px){
+	.intro{
+		min-height:0;
+		min-width: 0;
+}}
+.dim {
+	display: none;
+	position: fixed;
+	z-index: 30;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: #000;
+	opacity: 0.6;
+}
+
+.header {
+	z-index: 2;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height:82px;
+	background-color: #f7eed1;
+	
+}
+.header .header_wrap{
+	position: relative;
+	margin: 0 auto;
+}
+
+.header .float_wrap {
+	position: absolute;
+	right: 30px;
+	top: 27px;
+}
+a, a:link, a:visited a:hover a:active{
+ 	text-decoration:none;
+}
+
+.header .float_wrap li {
+	float: left;
+	margin: 0px 9px 0px 9px ;
+	padding: 10px;
+}
+.header .float_wrap ul {
+	overflow: hidden;
+	zoom: 1;
+}
+
+.header.float_wrap li a {
+	display: block;
+	padding: 10px;
+	text-decoration: none;
+}
+
+.header .header_wrap .float_wrap ul li a {
+	color: black;
+}
+
+ol, ul, li {
+	list-style:none;
+}
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px){
+	.footer{
+	display:none;	
+}}
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px) {
+.header {
+    border: 0;
+    background: none;
+}}
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px) {
+.header .float_wrap {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    top: auto;
+    width: 100%;
+    height: 45px;
+    background: #000;
+		background: rgba(0,0,0,0.2);
+}}
+
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px) {
+.header .float_wrap ul {
+    width: 100%;
+    padding-top: 3px;
+		padding-left: 0px;
+    text-align: center;
+}
+}
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px){
+	.header .float_wrap li{
+		display: inline-block;
+		float: none;
+		margin: 0 12px;
+}}
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px){
+	.header .float_wrap li a{
+		padding: 0;
+		display: block;
+		font-size: 10px;
+}
+}
+.intro_main {
+	position: relative;
+	width: 100%;
+	height:100%;
+}
+
+
+
+div {
+	display: block;
+}
+.intro_main .introduce{
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 100%;
+	height: 1024px;
+	margin: 0;
+	text-align: center;
+}
+.intro .intro_main .introduce .bg_pic{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url(/assets/WEBPAGE.png) no-repeat center 0;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.intro .intro_main .introduce .desc_text{
+		position: absolute;
+    left: 0;
+    top: 80%;
+    width: 100%;
+    text-align: center;
+}
+.intro .intro_main .introduce .aboutus{
+		position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px){
+
+.intro .intro_main .introduce .aboutus{
+		position: relative;
+    z-index: 3;
+    top: 30%;
+    height: auto;
+		margin: 0 auto;
+    text-align: center;
+}}
+
+
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px){
+
+.intro .intro_main .introduce .bg_pic{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url(/assets/WEBPAGE_small.png) no-repeat center 0;
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+}}
+
+@media (max-width: 509px) and (min-device-width: 1024px), (max-device-width: 480px){
+.intro .intro_main .introduce .desc_text{
+	position: relative;
+    z-index: 3;
+    top: 30%;
+    height: auto;
+    margin: 0 auto;
+}}
+
+	
+.footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	zoom: 1;
+	width: 100%;
+	padding: 20px 0px 20px 0px;
+	background-color: #000;
+	background: rgba(0,0,0,0.2);
+}

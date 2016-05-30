@@ -85,6 +85,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.9.1.1)
+    commander (4.4.0)
+      highline (~> 1.7.2)
     debug_inspector (0.0.2)
     domain_name (0.5.25)
       unf (>= 0.0.5, < 1.0.0)
@@ -213,6 +215,10 @@ GEM
       actionpack (>= 3.2, < 5)
       activesupport (>= 3.2, < 5)
     hashie (3.4.3)
+    highline (1.7.8)
+    houston (2.2.3)
+      commander (~> 4.1)
+      json
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     httparty (0.13.7)
@@ -373,6 +379,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   figaro
   fog
+  houston
   iamport!
   jbuilder (~> 2.0)
   jquery-rails
