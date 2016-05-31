@@ -335,24 +335,35 @@ require 'houston'
 	#	else
   #  	post = WantedBoard.joins(:user , :univ_category, :wanted_comments).select("DISTINCT wanted_board.*, user.name, univ_category.univ_name, wanted_comment.*").where(id: params[:wanted_board_id]) #find(params[:wanted_board_id 
   end
+	
+	def uritest
+			a = URI.unescape(params[:kkk])
+				respond_to do |format|
+    	  format.json {render json: a}
+				format.html {render html: a}
+     end
+	end
+
+			
   
   def post_sort # 학교별,성별,금액별 소팅해서보기
-		 
+		
+		decode_univ = URI.unescape(params[:univ]) 
 		if params[:univ].present? and params[:sex].present? and params[:reward].present? 
 				if params[:reward] == 0 #현상수배  내림차순
-					@post = WantedBoard.where(:univ_id => params[:univ], :target_gen => params[:sex]).order('reward DESC').paginate(:page => params[:page], :per_page => 5)
+					@post = WantedBoard.where(:univ_id => decode_univ, :target_gen => params[:sex]).order('reward DESC').paginate(:page => params[:page], :per_page => 5)
 				else
-					@post = WantedBoard.where(:univ_id => params[:univ], :target_gen => params[:sex]).order('reward ASC').paginate(:page => params[:page], :per_page => 5)
+					@post = WantedBoard.where(:univ_id => decode_univ, :target_gen => params[:sex]).order('reward ASC').paginate(:page => params[:page], :per_page => 5)
 				end
 		
 		elsif params[:univ].present? and params[:sex].present?
-				@post = WantedBoard.where(:univ_id => params[:univ], :target_gen => params[:sex]).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)
+				@post = WantedBoard.where(:univ_id => decode_univ, :target_gen => params[:sex]).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)
 
 		elsif params[:univ].present? and params[:reward].present?
 				if params[:reward]==0 #수배금 내림차순
-					@post = WantedBoard.where(:univ_id => params[:univ]).order('reward DESC').paginate(:page => params[:page], :per_page =>5)
+					@post = WantedBoard.where(:univ_id => decode_univ).order('reward DESC').paginate(:page => params[:page], :per_page =>5)
 				else
-					@post = WantedBoard.where(:univ_id => params[:univ]).order('reward ASC').paginate(:page => params[:page], :per_page =>5)
+					@post = WantedBoard.where(:univ_id => decode_univ).order('reward ASC').paginate(:page => params[:page], :per_page =>5)
 				end
 
 		elsif params[:sex].present? and params[:reward].present?
@@ -660,8 +671,11 @@ require 'houston'
 			post_user_id = WantedBoard.select(:user_id).where(id: post_id)
 			post_content = WantedBoard.select(:talk_to).where(id: post_id)	
 			post_device = Device.where(user_id: post_user_id).take
-			post_token = post_device.uuid
-			alarm_push_comment(post_device , post_content) 
+			unless post_device.nil?
+				post_token = post_device.uuid
+			  alarm_push_comment(post_token , post_content) 
+			else
+			end
 				
 			
     end
