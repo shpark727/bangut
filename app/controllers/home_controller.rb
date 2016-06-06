@@ -349,21 +349,28 @@ require 'houston'
   def post_sort # 학교별,성별,금액별 소팅해서보기
 		
 		decode_univ = URI.unescape(params[:univ]) 
+		unless decode_univ.nil? #univ파라미터 받은경우
+				university = UnivCategory.where(:univ_name => decode_univ).take
+				univID = university.id
+		else
+		end
+					
+		# 대학별, 성별, 현상금순 정렬
 		if params[:univ].present? and params[:sex].present? and params[:reward].present? 
 				if params[:reward] == 0 #현상수배  내림차순
-					@post = WantedBoard.where(:univ_id => decode_univ, :target_gen => params[:sex]).order('reward DESC').paginate(:page => params[:page], :per_page => 5)
+					@post = WantedBoard.where(:univ_id => univID, :target_gen => params[:sex]).order('reward DESC').paginate(:page => params[:page], :per_page => 5)
 				else
-					@post = WantedBoard.where(:univ_id => decode_univ, :target_gen => params[:sex]).order('reward ASC').paginate(:page => params[:page], :per_page => 5)
+					@post = WantedBoard.where(:univ_id => univID , :target_gen => params[:sex]).order('reward ASC').paginate(:page => params[:page], :per_page => 5)
 				end
 		
 		elsif params[:univ].present? and params[:sex].present?
-				@post = WantedBoard.where(:univ_id => decode_univ, :target_gen => params[:sex]).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)
+				@post = WantedBoard.where(:univ_id => univID , :target_gen => params[:sex]).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)
 
 		elsif params[:univ].present? and params[:reward].present?
 				if params[:reward]==0 #수배금 내림차순
-					@post = WantedBoard.where(:univ_id => decode_univ).order('reward DESC').paginate(:page => params[:page], :per_page =>5)
+					@post = WantedBoard.where(:univ_id => univID).order('reward DESC').paginate(:page => params[:page], :per_page =>5)
 				else
-					@post = WantedBoard.where(:univ_id => decode_univ).order('reward ASC').paginate(:page => params[:page], :per_page =>5)
+					@post = WantedBoard.where(:univ_id => univID).order('reward ASC').paginate(:page => params[:page], :per_page =>5)
 				end
 
 		elsif params[:sex].present? and params[:reward].present?
@@ -373,7 +380,7 @@ require 'houston'
 					@post = WantedBoard.where(:target_gen => params[:sex]).order('reward ASC').paginate(:page => params[:page], :per_page =>5)
 				end
 		elsif params[:univ].present?
-					@post = WantedBoard.where(:univ_id => params[:univ]).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)
+					@post = WantedBoard.where(:univ_id => univID).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)
 		elsif params[:sex].present?
 					@post = WantedBoard.where(:target_gen => params[:sex]).order('created_at DESC').paginate(:page => params[:page], :per_page =>5)
 		elsif params[:reward].present?
