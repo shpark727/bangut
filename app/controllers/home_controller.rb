@@ -319,7 +319,7 @@ require 'houston'
   
   def post_detail #현상수배글 상세보기
 		@post = WantedBoard.joins(:user , :univ_category ).select("wanted_board.*, user.name as user_name, univ_category.univ_name").where(id: params[:wanted_board_id]).take
-		@comments =  WantedComment.joins(:user).select("wanted_comment.*, user.name as user_name").where(wanted_board_id: params[:wanted_board_id]).all
+		@comments =  WantedComment.joins(:user).select("wanted_comment.*, user.name as user_name").order('created_at DESC').where(wanted_board_id: params[:wanted_board_id]).all
 		if @comments.nil?
 			respond_to do |format|
 				format.json {render json: @post}
@@ -566,7 +566,7 @@ require 'houston'
   def answer_post #답변 채택 
 		token = Token.where(utoken: params[:u_token]).take
 		@check = Hash.new
-		@check = {"success":true, "comment":"답변채택 권한이 없습니다."}
+		@check = {"success":false, "comment":"답변채택 권한이 없습니다."}
 		if token.nil?
 		else
 			user = User.find(token.user_id)
@@ -579,9 +579,13 @@ require 'houston'
 					comment_user_id = WantedComment.select(:user_id).where(id: params[:wanted_reply])
 					comment_content = WantedComment.select(:content).where(id: params[:wanted_reply])
 					comment_device = Device.where(user_id: comment_user_id).take
+					unless comment_device.nil? # device token이 없는 경우 . ios simulation
 					comment_token = comment_device.uuid
 					alarm_push_select(comment_token, comment_content)
+					else
+					end
 			else
+				@check ={"success":false, "comment":"채택 권한이 없거나, 이미 답변이 채택되었습니다."}
 			end
 		end
 			respond_to do |format|
