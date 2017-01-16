@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   root 'home#index'
 
- get 'first' => 'home#index' 
+ 	get 'first' => 'home#index' 
   get 'abcd' => 'home#abcd'
 	post 'abcd' => 'home#abcd'
 

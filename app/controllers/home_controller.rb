@@ -4,6 +4,7 @@ require 'digest/md5'
 require 'digest/sha1'
 require 'houston'
 
+
 	def test
 	@d = User.all
 	@b= FacebookUser.all
@@ -545,7 +546,7 @@ require 'houston'
   def delete_post #현상수배 글삭제
     token = Token.where(utoken: params[:u_token]).take
 		check = Hash.new
-		check = {"success":"fail","comment":"수정 권한이 없습니다."}
+		check = {"success":false,"comment":"수정 권한이 없습니다."}
 		if token.nil?
 		else
 				user = User.find(token.user_id)
@@ -553,7 +554,7 @@ require 'houston'
     
    			if delete.user_id == user.id 
       			delete.destroy
-					check = {"success":"success","comment":"글이 삭제 되었습니다."}
+					check = {"success":true,"comment":"글이 삭제 되었습니다."}
     		end
     
  		end
@@ -731,6 +732,7 @@ require 'houston'
     	else
     	end
 		end
+
 			respond_to do |format|
 				format.json { render json: @check }
 			end

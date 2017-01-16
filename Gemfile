@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activeadmin', github: 'activeadmin'
 gem 'houston'
+gem 'devise'
 
 gem 'iamport', github: 'iamport/iamport-rest-client-ruby'
 
